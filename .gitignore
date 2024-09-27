@@ -1,4 +1,5 @@
 /.venv
 /.my_pgpass
 /dnd4e_charlist/.env
+/dnd4e_charlist/.envmine
 **/__pycache__/
