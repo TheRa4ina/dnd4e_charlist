@@ -9,7 +9,38 @@
   <script src="{%static "charlist/js/scripts.js"%}"></script>
 </head>
 <body>
-    Something
+  <div class="abilities_container">
+    <div class="ability header">
+      <h1>Score</h1>
+      <h1>Ability</h1>
+      <h1>Mod</h1>
+      <h1>Mod + 1/2lvl</h1>
+    </div>
+    {%for ability in abilities%}
+    <div class="ability">
+      <input type="number" name="{{ability}}" id="{{ability}}"/>
+      <label for="{{ability}}">{{ability}}</label>
+      <input type="number" name="{{ability}}-mod" id="{{ability}}-mod" readonly/>
+      <input type="number" name="{{ability}}-mod-plus" id="{{ability}}-mod-plus" readonly/>
+    </div>
+    {%endfor%}
+  </div>
+  <div class="senses_container">
+    <div class="sense header">
+      <h1>Score</h1>
+      <h1>Passive sense</h1>
+      <h1>Skill bonus</h1>
+    </div>
+    {%for sense in senses%}
+    <div class="sense">
+      <input type="number" name="{{sense}}" id="{{sense}}" readonly/>
+      <label for="{{sense}}">{{sense}}</label>
+      <input type="number" name="{{sense}}-bonus" id="{{sense}}-bonus" readonly/>
+    </div>
+    {%endfor%}
+  </div>
+    
+
 </body>
 
 </html>
