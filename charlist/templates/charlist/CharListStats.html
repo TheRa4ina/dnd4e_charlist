@@ -1,4 +1,5 @@
 {% load static %}
+{% load get_item%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,8 +19,10 @@
     </div>
     {%for ability in abilities%}
     <div class="ability">
-      <input type="number" name="{{ability}}" id="{{ability}}"/>
+      <!-- Это берется из источников -->
+      <input type="number" name="{{ability}}" value="{{user_value.abilities|get_item:ability}}" id="{{ability}}" readonly/>
       <label for="{{ability}}">{{ability}}</label>
+      <!-- Тут вычисления через js -->
       <input type="number" name="{{ability}}-mod" id="{{ability}}-mod" readonly/>
       <input type="number" name="{{ability}}-mod-plus" id="{{ability}}-mod-plus" readonly/>
     </div>
@@ -33,6 +36,7 @@
     </div>
     {%for sense in senses%}
     <div class="sense">
+      <!-- Тут вычисления через js -->
       <input type="number" name="{{sense}}" id="{{sense}}" readonly/>
       <label for="{{sense}}">{{sense}}</label>
       <input type="number" name="{{sense}}-bonus" id="{{sense}}-bonus" readonly/>
