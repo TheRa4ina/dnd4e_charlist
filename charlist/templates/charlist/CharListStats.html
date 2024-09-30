@@ -43,7 +43,26 @@
     </div>
     {%endfor%}
   </div>
-    
+
+  <div class="skills_container">
+    <div class="skill header">
+      <h1>Trained</h1> 
+      <h1>Score</h1>
+      <h1>Skill name</h1>
+      <h1>Dependent</h1>
+      <!--В теории тут должна быть возможность дополнять поля-->
+    </div>
+    {%for skill in skills%}
+    <div class="skill">
+      <!-- Тут вычисления через js -->
+      <input type="checkbox"/>
+      <div class="skill_value" id="{{skill}}" name="{{skill}}">0</div>
+      <label for="{{skill}}">{{skill|title}}</label>
+      <div class="skill_dependent">Впадлу</div>
+    </div>
+    {%endfor%}
+  </div>
+  
 
 </body>
 

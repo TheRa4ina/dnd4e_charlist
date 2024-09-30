@@ -19,6 +19,11 @@ class CharListStats(TemplateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["abilities"] = ["strength","constitution","dexterity","intelligence","wisdom","charisma"]
+        context["skills"] = ["acrobatic","arcana","athletic","bluff","diplomacy",
+                             "dungeoning","endurange","heal","history","insight",
+                             "intimidate","nature","perception","religion","stealth",
+                             "streetwise","thievery"]
+        # Сюда бы еще добавить на чем эти скилы депендент, но мне впадлу
         context["senses"] = ["insight","perception"]
         context['user_value']=user_value
         return context

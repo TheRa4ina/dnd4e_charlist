@@ -1,69 +1,49 @@
+.ability,.sense,.skill {
+  display: contents;
+}
+.ability,.sense,.skill label {
+  grid-column: span 1;
+}
+
+.ability,.sense,.skill input {
+  width: 100%;
+}
+
 .abilities_container{
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
-    gap: 10px;
-  }
-  
-  .ability.header {
-    font-weight: bold;
-    text-align: center;
-    grid-column: span 4;
-    display: contents; /* Makes each item behave as a grid child */
-  }
-  
-  .ability {
-    display: contents;
-  }
-  
-  .ability label {
-    grid-column: span 1;
-  }
-  
-  .ability input {
-    width: 100%;
-  }
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
+  gap: 10px;
+}
 
-  .ability_scores {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
-    gap: 10px;
-  }
-  
-  .ability.header {
-    font-weight: bold;
-    text-align: center;
-    grid-column: span 4;
-    display: contents; /* Makes each item behave as a grid child */
-  }
-  
-  .ability,.sense {
-    display: contents;
-  }
-  
-  .ability,.sense label {
-    grid-column: span 1;
-  }
-  
-  .ability,.sense input {
-    width: 100%;
-  }
+.ability.header {
+  font-weight: bold;
+  text-align: center;
+  grid-column: span 4;
+  display: contents; /* Makes each item behave as a grid child */
+}
 
-  .senses_container{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 4 equal columns */
-    gap: 10px;
-  }
-  
-  .sense.header {
-    font-weight: bold;
-    text-align: center;
-    grid-column: span 3;
-    display: contents; /* Makes each item behave as a grid child */
-  }
-  
-  .sense.header {
-    font-weight: bold;
-    text-align: center;
-    grid-column: span 3;
-    display: contents; /* Makes each item behave as a grid child */
-  }
+.senses_container{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 4 equal columns */
+  gap: 10px;
+}
+
+.sense.header {
+  font-weight: bold;
+  text-align: center;
+  grid-column: span 3;
+  display: contents; /* Makes each item behave as a grid child */
+}
+
+.skills_container{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
+  gap: 10px;
+}
+
+.skill.header {
+  font-weight: bold;
+  text-align: center;
+  grid-column: span 4;
+  display: contents; /* Makes each item behave as a grid child */
+}
