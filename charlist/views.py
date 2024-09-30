@@ -19,7 +19,17 @@ class CharListStats(TemplateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["abilities"] = ["strength","constitution","dexterity","intelligence","wisdom","charisma"]
-
         context["senses"] = ["insight","perception"]
         context['user_value']=user_value
         return context
+
+# Also hardcoded af, still waiting for models
+user_value["sessions"] = ["eberron", "test_sesh", "dm_testing"]
+
+class SessionSelection(TemplateView):
+    template_name = "charlist/SessionSelection.html"
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['user_value']=user_value
+        return context
+
