@@ -21,7 +21,7 @@
     <div class="ability">
       <!-- Это берется из источников -->
       <input type="number" name="{{ability}}" value="{{user_value.abilities|get_item:ability}}" id="{{ability}}" readonly/>
-      <label for="{{ability}}">{{ability}}</label>
+      <label for="{{ability}}">{{ability|title}}</label>
       <!-- Тут вычисления через js -->
       <input type="number" name="{{ability}}-mod" id="{{ability}}-mod" readonly/>
       <input type="number" name="{{ability}}-mod-plus" id="{{ability}}-mod-plus" readonly/>
@@ -38,7 +38,7 @@
     <div class="sense">
       <!-- Тут вычисления через js -->
       <input type="number" name="{{sense}}" id="{{sense}}" readonly/>
-      <label for="{{sense}}">{{sense}}</label>
+      <label for="{{sense}}">{{sense|title}}</label>
       <input type="number" name="{{sense}}-bonus" id="{{sense}}-bonus" readonly/>
     </div>
     {%endfor%}
