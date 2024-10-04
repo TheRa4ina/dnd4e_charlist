@@ -29,21 +29,8 @@ class Character(models.Model):
     char_class = models.CharField(max_length=200, null=True)
     race = models.CharField(max_length=200, null=True)
     xp = models.IntegerField(default=0)
-    SIZES = {
-        "T": "Tiny",
-        "S": "Small",
-        "M": "Medium",
-        "L": "Large",
-        "H": "Huge",
-        "G": "Gargantuan",
-    }
-    size = models.CharField(max_length=1, choices=SIZES, default="M")
-    GENDERS = {
-        "M": "Male",
-        "F": "Female",
-        "O": "Other",
-    }
-    gender = models.CharField(max_length=1, choices=GENDERS, default="M")
+    size = models.ForeignKey(Size,on_delete=models.CASCADE)
+    gender = models.ForeignKey(Gender,on_delete=models.CASCADE)
     height = models.IntegerField(default=0)
     weight = models.IntegerField(default=0)
     alignment = models.CharField(max_length=200, null=True)
@@ -105,11 +92,13 @@ class Character_Skill_Extra(models.Model):
 class Character_Trained_Skill(models.Model):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
-    
+
 class Character_Notes(models.Model):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     note_name=models.CharField(max_length=100)
-    note_name=models.CharField(max_length=100)
     note = models.CharField(max_length=2000)
 
-
+class Gm_Notes(models.Model):
+    gm = models.ForeignKey(Game_GM, on_delete=models.CASCADE)
+    note_name = models.CharField(max_length=100)
+    note = models.TextField()
