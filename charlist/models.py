@@ -96,7 +96,7 @@ class Character_Trained_Skill(models.Model):
 class Character_Notes(models.Model):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     note_name=models.CharField(max_length=100)
-    note = models.CharField(max_length=2000)
+    note = models.TextField()
 
 class Gm_Notes(models.Model):
     gm = models.ForeignKey(Game_GM, on_delete=models.CASCADE)
