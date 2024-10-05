@@ -1,49 +1,47 @@
-.ability,.sense,.skill {
+.container{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+
+}
+
+.defenses_grid{
+  --repeats: 3
+}
+
+.abilities_grid{
+  --repeats: 4
+}
+
+.senses_grid{
+  --repeats: 3
+}
+
+.skills_grid{
+  --repeats:4
+}
+
+.stat_row {
   display: contents;
 }
-.ability,.sense,.skill label {
+.stat_row label {
   grid-column: span 1;
 }
 
-.ability,.sense,.skill input {
+.stat_row input {
   width: 100%;
 }
 
-.abilities_container{
+.header{
+  font-weight: bold;
+  display: contents;
+  grid-column: span var(--repeats);
+}
+
+.grid_container{
+  border-bottom: 5px solid black;
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
+  grid-template-columns: repeat(var(--repeats), 1fr);
   gap: 10px;
 }
 
-.ability.header {
-  font-weight: bold;
-  text-align: center;
-  grid-column: span 4;
-  display: contents; /* Makes each item behave as a grid child */
-}
-
-.senses_container{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 4 equal columns */
-  gap: 10px;
-}
-
-.sense.header {
-  font-weight: bold;
-  text-align: center;
-  grid-column: span 3;
-  display: contents; /* Makes each item behave as a grid child */
-}
-
-.skills_container{
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
-  gap: 10px;
-}
-
-.skill.header {
-  font-weight: bold;
-  text-align: center;
-  grid-column: span 4;
-  display: contents; /* Makes each item behave as a grid child */
-}

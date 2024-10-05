@@ -74,7 +74,7 @@ class Character_Defenses_Extra(models.Model):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     extra_name = models.CharField(max_length=50)
     armor_coefficient = models.IntegerField(default=0)
-    fortres = models.IntegerField(default=0)
+    fortitude = models.IntegerField(default=0)
     reflex = models.IntegerField(default=0)
     will = models.IntegerField(default=0)
 

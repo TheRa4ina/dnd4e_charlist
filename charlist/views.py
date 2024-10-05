@@ -21,8 +21,8 @@ class CharListStats(TemplateView):
         context = super().get_context_data(**kwargs)
         context["abilities"] = Ability.objects.all()
         context["skills"] = Skill.objects.all()
-        # Сюда бы еще добавить на чем эти скилы депендент, но мне впадлу
         context["senses"] = ["insight","perception"]
+        context["defenses"] = ["armor_coefficient","fortitude","reflex","will"]
         context['user_value']=user_value
         return context
 
