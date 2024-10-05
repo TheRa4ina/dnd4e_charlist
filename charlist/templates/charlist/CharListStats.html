@@ -14,74 +14,80 @@
 
 <body>
   <div class="container">
-    <div class="grid_container defenses_grid">
-      <div class="defense header">
-        <h1>Score</h1>
-        <h1>Name</h1>
-        <h1>Score+1/2lvl</h1>
+    <div class="grids">
+      <h1>DEFENSES</h1>
+      <div class="grid_container defenses_grid">
+        <div class="defense header">
+          <h1>Score</h1>
+          <h1>Name</h1>
+          <h1>Score+1/2lvl</h1>
+        </div>
+        {%for defense in defenses%}
+        <div class="defense stat_row">
+          <!-- Это берется из источников -->
+          <input type="number" name="{{defense}}" value="0" id="{{defense}}" readonly />
+          <label for="{{defense}}">{{defense|title}}</label>
+          <!-- Тут вычисления через js -->
+          <input type="number" name="{{defense}}-mod" id="{{defense}}-mod" readonly />
+        </div>
+        {%endfor%}
       </div>
-      {%for defense in defenses%}
-      <div class="defense stat_row">
-        <!-- Это берется из источников -->
-        <input type="number" name="{{defense}}" value="0" id="{{defense}}" readonly />
-        <label for="{{defense}}">{{defense|title}}</label>
-        <!-- Тут вычисления через js -->
-        <input type="number" name="{{defense}}-mod" id="{{defense}}-mod" readonly />
+      <h1>ABILITIES</h1>
+      <div class="grid_container abilities_grid">
+        <div class="ability header">
+          <h1>Score</h1>
+          <h1>Ability</h1>
+          <h1>Mod</h1>
+          <h1>Mod + 1/2lvl</h1>
+        </div>
+        {%for ability in abilities%}
+        <div class="ability stat_row">
+          <!-- Это берется из источников -->
+          <input type="number" name="{{ability}}" value="{{user_value.abilities|get_item:ability}}" id="{{ability}}"
+            readonly />
+          <label for="{{ability}}">{{ability|title}}</label>
+          <!-- Тут вычисления через js -->
+          <input type="number" name="{{ability}}-mod" id="{{ability}}-mod" readonly />
+          <input type="number" name="{{ability}}-mod-plus" id="{{ability}}-mod-plus" readonly />
+        </div>
+        {%endfor%}
       </div>
-      {%endfor%}
-    </div>
-    <div class="grid_container abilities_grid">
-      <div class="ability header">
-        <h1>Score</h1>
-        <h1>Ability</h1>
-        <h1>Mod</h1>
-        <h1>Mod + 1/2lvl</h1>
+      <h1>SENSES</h1>
+      <div class="grid_container senses_grid">
+        <div class="sense header">
+          <h1>Score</h1>
+          <h1>Passive sense</h1>
+          <h1>Skill bonus</h1>
+        </div>
+        {%for sense in senses%}
+        <div class="sense stat_row">
+          <!-- Тут вычисления через js -->
+          <input type="number" name="{{sense}}" id="{{sense}}" readonly />
+          <label for="{{sense}}">{{sense|title}}</label>
+          <input type="number" name="{{sense}}-bonus" id="{{sense}}-bonus" readonly />
+        </div>
+        {%endfor%}
       </div>
-      {%for ability in abilities%}
-      <div class="ability stat_row">
-        <!-- Это берется из источников -->
-        <input type="number" name="{{ability}}" value="{{user_value.abilities|get_item:ability}}" id="{{ability}}"
-          readonly />
-        <label for="{{ability}}">{{ability|title}}</label>
-        <!-- Тут вычисления через js -->
-        <input type="number" name="{{ability}}-mod" id="{{ability}}-mod" readonly />
-        <input type="number" name="{{ability}}-mod-plus" id="{{ability}}-mod-plus" readonly />
-      </div>
-      {%endfor%}
-    </div>
-    <div class="grid_container senses_grid">
-      <div class="sense header">
-        <h1>Score</h1>
-        <h1>Passive sense</h1>
-        <h1>Skill bonus</h1>
-      </div>
-      {%for sense in senses%}
-      <div class="sense stat_row">
-        <!-- Тут вычисления через js -->
-        <input type="number" name="{{sense}}" id="{{sense}}" readonly />
-        <label for="{{sense}}">{{sense|title}}</label>
-        <input type="number" name="{{sense}}-bonus" id="{{sense}}-bonus" readonly />
-      </div>
-      {%endfor%}
-    </div>
 
-    <div class="grid_container skills_grid">
-      <div class="skill header">
-        <h1>Trained</h1>
-        <h1>Score</h1>
-        <h1>Skill name</h1>
-        <h1>Dependent</h1>
-        <!--В теории тут должна быть возможность дополнять поля-->
+      <h1>SKILLS</h1>
+      <div class="grid_container skills_grid">
+        <div class="skill header">
+          <h1>Trained</h1>
+          <h1>Score</h1>
+          <h1>Skill name</h1>
+          <h1>Dependent</h1>
+          <!--В теории тут должна быть возможность дополнять поля-->
+        </div>
+        {%for skill in skills%}
+        <div class="skill stat_row">
+          <!-- Тут вычисления через js -->
+          <input type="checkbox" />
+          <div class="skill_value" id="{{skill}}" name="{{skill}}">0</div>
+          <label for="{{skill}}">{{skill|title}}</label>
+          <div class="skill_dependent">Впадлу</div>
+        </div>
+        {%endfor%}
       </div>
-      {%for skill in skills%}
-      <div class="skill stat_row">
-        <!-- Тут вычисления через js -->
-        <input type="checkbox" />
-        <div class="skill_value" id="{{skill}}" name="{{skill}}">0</div>
-        <label for="{{skill}}">{{skill|title}}</label>
-        <div class="skill_dependent">Впадлу</div>
-      </div>
-      {%endfor%}
     </div>
   </div>
 </body>
