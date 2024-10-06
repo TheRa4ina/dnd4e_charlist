@@ -25,6 +25,7 @@ class Size(models.Model):
 
 class Character(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     char_class = models.CharField(max_length=200, null=True)
     race = models.CharField(max_length=200, null=True)

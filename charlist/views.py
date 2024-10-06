@@ -19,6 +19,9 @@ class CharListStats(TemplateView):
     template_name = "charlist/CharListStats.html"
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
+        context["basis"] = ["name","class","race","size","age",
+                            "gender","height","weight","algnment",
+                            "deity","max-hp","surges-day","level"]
         context["abilities"] = Ability.objects.all()
         context["skills"] = Skill.objects.all()
         context["senses"] = ["insight","perception"]
@@ -35,4 +38,3 @@ class SessionSelection(TemplateView):
         context = super().get_context_data(**kwargs)
         context['user_value']=user_value
         return context
-

@@ -15,6 +15,15 @@
 <body>
   <div class="container">
     <div class="grids">
+      <h1>CHARACTER</h1>
+      <div class="grid_container basis_grid">
+        {%for field in basis%}
+        <div class="basis stat_row">
+          <input type="number" name="{{field}}" id="{{field}}" />
+          <label for="{{field}}">{{field|title}}</label>
+        </div>
+        {%endfor%}
+      </div>
       <h1>DEFENSES</h1>
       <div class="grid_container defenses_grid">
         <div class="defense header">
@@ -25,7 +34,7 @@
         {%for defense in defenses%}
         <div class="defense stat_row">
           <!-- Это берется из источников -->
-          <input type="number" name="{{defense}}" value="0" id="{{defense}}" readonly />
+          <input type="number" name="{{defense}}" id="{{defense}}"/>
           <label for="{{defense}}">{{defense|title}}</label>
           <!-- Тут вычисления через js -->
           <input type="number" name="{{defense}}-mod" id="{{defense}}-mod" readonly />
@@ -43,8 +52,8 @@
         {%for ability in abilities%}
         <div class="ability stat_row">
           <!-- Это берется из источников -->
-          <input type="number" name="{{ability}}" value="{{user_value.abilities|get_item:ability}}" id="{{ability}}"
-            readonly />
+          <input type="number" name="{{ability}}"
+           value="{{user_value.abilities|get_item:ability}}" id="{{ability}}"/>
           <label for="{{ability}}">{{ability|title}}</label>
           <!-- Тут вычисления через js -->
           <input type="number" name="{{ability}}-mod" id="{{ability}}-mod" readonly />
@@ -62,7 +71,7 @@
         {%for sense in senses%}
         <div class="sense stat_row">
           <!-- Тут вычисления через js -->
-          <input type="number" name="{{sense}}" id="{{sense}}" readonly />
+          <input type="number" name="{{sense}}" id="{{sense}}"/>
           <label for="{{sense}}">{{sense|title}}</label>
           <input type="number" name="{{sense}}-bonus" id="{{sense}}-bonus" readonly />
         </div>

@@ -2,7 +2,11 @@
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
+  margin: 30px
+}
 
+.basis_grid{
+  --repeats: 2
 }
 
 .defenses_grid{
@@ -29,7 +33,7 @@
 }
 
 .stat_row input {
-  width: 30px;
+  width: 50px;
 }
 
 .header{
