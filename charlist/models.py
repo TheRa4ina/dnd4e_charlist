@@ -57,13 +57,7 @@ class Skill(models.Model):
     def __str__(self):
         return self.skill
     skill = models.CharField(max_length=200, primary_key=True)
-
-class Character_Skill(models.Model):
-    character = models.ForeignKey(Character, on_delete=models.CASCADE)
-    skill = models.ForeignKey(Skill,on_delete=models.CASCADE)
-    score=models.IntegerField(default=10)
-    trained=models.BooleanField(default=False)
-
+    
 class Character_Ability(models.Model):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     ability = models.ForeignKey(Ability, on_delete=models.CASCADE)
