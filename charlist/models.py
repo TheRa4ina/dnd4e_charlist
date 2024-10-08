@@ -39,7 +39,7 @@ class Character(models.Model):
     speed = models.IntegerField(default=0)
     action_points = models.IntegerField(default=0)
 
-class Character_Health:
+class Character_Health(models.Model):
     character = models.OneToOneField(Character, on_delete=models.CASCADE)
     max_hp = models.IntegerField(default=0)
     hp = models.IntegerField(default=0)
