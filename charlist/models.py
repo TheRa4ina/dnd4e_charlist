@@ -1,16 +1,16 @@
 from django.db import models
 from django.conf import settings
 
-class Game(models.Model):
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL, through="Game_User")
+class Session(models.Model):
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL, through="Session_User")
     name = models.CharField(max_length=200)
 
-class Game_User(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+class Session_User(models.Model):
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
-class Game_GM(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+class Session_GM(models.Model):
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
     gm = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 class Gender(models.Model):
@@ -24,7 +24,7 @@ class Size(models.Model):
     size = models.CharField(max_length=50, primary_key=True)
 
 class Character(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     char_class = models.CharField(max_length=200, null=True)
@@ -97,6 +97,6 @@ class Character_Notes(models.Model):
     note = models.TextField()
 
 class Gm_Notes(models.Model):
-    gm = models.ForeignKey(Game_GM, on_delete=models.CASCADE)
+    gm = models.ForeignKey(Session_GM, on_delete=models.CASCADE)
     note_name = models.CharField(max_length=100)
     note = models.TextField()
