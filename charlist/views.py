@@ -67,5 +67,7 @@ def add_session(request: HttpRequest):
     except(KeyError):
         return HttpResponse("Invalid post")
     else:
-        #session-creation-placeholder
+        current_user = request.user
+        new_session = Session.objects.create(name = session_name)
+        new_session_gm = Session_GM.objects.create(session=new_session,gm=current_user)
         return HttpResponseRedirect(reverse("charlist:SessionSelector"))
