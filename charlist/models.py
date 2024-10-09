@@ -2,14 +2,20 @@ from django.db import models
 from django.conf import settings
 
 class Session(models.Model):
+    def __str__(self):
+        return f"{self.name}"
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, through="Session_User")
     name = models.CharField(max_length=200)
 
 class Session_User(models.Model):
+    def __str__(self):
+        return f"{self.session} - {self.user}"
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 class Session_GM(models.Model):
+    def __str__(self):
+        return f"{self.session} - {self.gm}"
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     gm = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
@@ -24,6 +30,8 @@ class Size(models.Model):
     size = models.CharField(max_length=50, primary_key=True)
 
 class Character(models.Model):
+    def __str__(self):
+        return self.name
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
@@ -59,6 +67,8 @@ class Skill(models.Model):
     skill = models.CharField(max_length=200, primary_key=True)
     
 class Character_Ability(models.Model):
+    def __str__(self):
+        return f"{self.character}.{self.ability} = {self.score}"
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     ability = models.ForeignKey(Ability, on_delete=models.CASCADE)
     score = models.IntegerField(default=10)
@@ -92,11 +102,15 @@ class Character_Trained_Skill(models.Model):
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
 
 class Character_Notes(models.Model):
+    def __str__(self):
+        return f"{self.character}'s note: {self.note_name}"
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     note_name = models.CharField(max_length=100)
     note = models.TextField()
 
 class Gm_Notes(models.Model):
+    def __str__(self):
+        return f"{self.gm}'s note: {self.note_name}"
     gm = models.ForeignKey(Session_GM, on_delete=models.CASCADE)
     note_name = models.CharField(max_length=100)
     note = models.TextField()
