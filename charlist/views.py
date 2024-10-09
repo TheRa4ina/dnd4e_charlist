@@ -2,8 +2,10 @@ from typing import Any
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect,HttpRequest
 from django.views.generic.base import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import *
 from django.urls import reverse
+from django.db.models import Q
 
 # Hard coded af, waiting for xdmav's models
 user_value = {
@@ -48,14 +50,13 @@ def add_char(request,session_name):
         }))
 
 
-# Still hardcoded asf
-user_value["sessions"] = ["eberron", "test_sesh", "dm_testing"]
-
-class SessionSelection(TemplateView):
+class SessionSelection(LoginRequiredMixin,TemplateView):
+    login_url="admin/"
     template_name = "charlist/SessionSelection.html"
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        cur_user = self.request.user
         context = super().get_context_data(**kwargs)
-        context['user_value']=user_value
+        context["sessions"] = Session.objects.filter(Q(session_gm__gm = cur_user) | Q(session_user__user = cur_user))
         return context
 
 class SessionCreator(TemplateView):

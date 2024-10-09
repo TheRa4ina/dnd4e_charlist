@@ -11,10 +11,10 @@
 </head>
 <body>
     <div class="sessions_container">
-        {%for session in user_value.sessions%}
+        {%for session in sessions%}
         <div class="session">
           <!-- Это берется из источников -->
-            <a href="{% url 'charlist:CharListStats' session_name=session%}">Session</a>
+            <a href="{% url 'charlist:CharListStats' session_name=session%}">{{session.name}}</a>
         </div>
         {%endfor%}
     </div>
