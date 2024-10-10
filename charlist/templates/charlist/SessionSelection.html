@@ -14,7 +14,7 @@
         {%for session in sessions%}
         <div class="session">
           <!-- Это берется из источников -->
-            <a href="{% url 'charlist:CharSelector' session_name=session%}">{{session.name}}</a>
+            <a href="{% url 'charlist:CharSelector' session_id=session.id%}">{{session.name}}</a>
         </div>
         {%endfor%}
     </div>
