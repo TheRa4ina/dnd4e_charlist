@@ -13,7 +13,7 @@
         {%for char in characters%}
         <div class="character">
           <!-- Это берется из источников -->
-            <a href="{% url 'charlist:CharListStats' session_id=session_id char_name=char.name%}">{{char.name}}</a>
+            <a href="{% url 'charlist:CharListStats' session_id=session_id char_id=char.id%}">{{char.name}}</a>
         </div>
         {%endfor%}
     </div>

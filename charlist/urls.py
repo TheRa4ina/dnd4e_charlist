@@ -9,5 +9,5 @@ urlpatterns = [
     path("<int:session_id>/char_selector",views.CharSelector.as_view(),name="CharSelector"),
     path("<int:session_id>/char_creator/",views.CharCreator.as_view(),name="CharCreator"),
     path("<int:session_id>/add_char/",views.add_char,name="AddChar"),
-    path("<int:session_id>/<slug:char_name>/stats/", views.CharListStats.as_view(), name="CharListStats"),
+    path("<int:session_id>/<int:char_id>/stats/", views.CharListStats.as_view(), name="CharListStats"),
 ]
