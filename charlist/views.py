@@ -50,7 +50,8 @@ class CharSelector(TemplateView):
         current_user = self.request.user
         context = super().get_context_data(**kwargs)
         context["characters"] = Character.objects.filter(
-            user=current_user.id
+            Q(user=current_user.id) &
+            Q(session__name=context['session_name'])
             )
         return context
     
