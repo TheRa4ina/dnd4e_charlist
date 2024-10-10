@@ -51,21 +51,21 @@ class CharSelector(TemplateView):
         context = super().get_context_data(**kwargs)
         context["characters"] = Character.objects.filter(
             Q(user=current_user.id) &
-            Q(session__name=context['session_name'])
+            Q(session__id=context['session_id'])
             )
         return context
     
 class CharCreator(TemplateView):
     template_name="charlist/CharCreator.html"
 
-def add_char(request,session_name):
+def add_char(request,session_id):
     try:
         char_name = request.POST["name"]
     except(KeyError):
         return HttpResponse("Invalid post")
     else:
         current_user = request.user
-        current_session = Session.objects.get(name=session_name)    
+        current_session = Session.objects.get(id = session_id)    
         new_character = Character.objects.create(
             session=current_session,
             user = current_user,
@@ -77,7 +77,7 @@ def add_char(request,session_name):
                 ability = ability)
         
         return HttpResponseRedirect(reverse("charlist:CharListStats",kwargs={
-            "session_name":session_name,
+            "session_id":session_id,
             "char_name":char_name
         }))
 
