@@ -5,16 +5,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sessions</title>
+  <title>Characters</title>
   <link rel="stylesheet" href="{%static 'charlist/styles.css'%}">
-  <script src="{%static "charlist/js/scripts.js"%}"></script>
 </head>
 <body>
-    <div class="sessions_container">
-        {%for session in sessions%}
-        <div class="session">
+    <div class="characters_container">
+        {%for char in characters%}
+        <div class="character">
           <!-- Это берется из источников -->
-            <a href="{% url 'charlist:CharSelector' session_name=session%}">{{session.name}}</a>
+            <a href="{% url 'charlist:CharListStats' session_name=session_name char_name=char.name%}">{{char.name}}</a>
         </div>
         {%endfor%}
     </div>
