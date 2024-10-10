@@ -1,11 +1,24 @@
+from typing import Iterable
 from django.db import models
 from django.conf import settings
-
+from django.utils.crypto import get_random_string
 class Session(models.Model):
     def __str__(self):
         return f"{self.name}"
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, through="Session_User")
     name = models.CharField(max_length=200)
+
+class Session_Invitation(models.Model):
+    session = models.ForeignKey(Session,on_delete=models.CASCADE)
+    key = models.CharField(max_length=128,unique=True)
+
+    def save(self, *args, **kwargs) -> None:
+        if not self.key:
+            self.key=self.generate_secret_key()
+        super().save(*args,**kwargs)
+
+    def generate_secret_key(self):
+        return get_random_string(128)
 
 class Session_User(models.Model):
     def __str__(self):

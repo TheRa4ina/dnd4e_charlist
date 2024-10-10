@@ -30,7 +30,8 @@ def add_session(request: HttpRequest):
     else:
         current_user = request.user
         new_session = Session.objects.create(name = session_name)
-        new_session_gm = Session_GM.objects.create(session=new_session,gm=current_user)
+        Session_GM.objects.create(session=new_session,gm=current_user)
+        Session_Invitation.objects.create(session = new_session)
         return HttpResponseRedirect(reverse("charlist:SessionSelector"))
 
 class SessionSelection(LoginRequiredMixin,TemplateView):
