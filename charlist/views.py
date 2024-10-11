@@ -101,7 +101,7 @@ def add_char(request,session_id):
         
         return HttpResponseRedirect(reverse("charlist:CharListStats",kwargs={
             "session_id":session_id,
-            "char_name":char_name
+            "char_id":new_character.id
         }))
 
 class CharListStats(TemplateView):
