@@ -1,7 +1,8 @@
 from typing import Iterable
-from django.db import models
+from django.db import models,IntegrityError
 from django.conf import settings
 from django.utils.crypto import get_random_string
+
 class Session(models.Model):
     def __str__(self):
         return f"{self.name}"
@@ -17,7 +18,16 @@ class Session_Invitation(models.Model):
     def save(self, *args, **kwargs) -> None:
         if not self.key:
             self.key=self.generate_secret_key()
-        super().save(*args,**kwargs)
+        retries = 5
+        for _ in range(retries):
+            try:
+                super().save(*args, **kwargs)
+                break
+            except IntegrityError: #idefk how this could happen but if it will
+                self.key = self.generate_secret_key()
+        else: #at this point something wrong
+            raise ValueError("Could not generate a unique key after multiple attempts.")
+
 
     def generate_secret_key(self):
         return get_random_string(128)
