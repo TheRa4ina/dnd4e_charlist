@@ -5,6 +5,7 @@ app_name = "charlist"
 urlpatterns = [
     path("session_creator/",views.SessionCreator.as_view(),name="SessionCreator"),
     path("create_session/",views.add_session,name="AddSession"),
+    path("invite/<str:invitation_key>/",views.join_session,name="JoinSession"),
     path("",views.SessionSelection.as_view(),name="SessionSelector"),
     path("<int:session_id>/char_selector",views.CharSelector.as_view(),name="CharSelector"),
     path("<int:session_id>/char_creator/",views.CharCreator.as_view(),name="CharCreator"),

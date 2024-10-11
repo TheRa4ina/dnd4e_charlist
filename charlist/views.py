@@ -2,6 +2,7 @@ from typing import Any
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect,HttpRequest
 from django.views.generic.base import TemplateView
+from django.core import exceptions
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import *
 from django.urls import reverse
@@ -30,8 +31,28 @@ def add_session(request: HttpRequest):
     else:
         current_user = request.user
         new_session = Session.objects.create(name = session_name)
-        new_session_gm = Session_GM.objects.create(session=new_session,gm=current_user)
+        Session_GM.objects.create(session=new_session,gm=current_user)
+        Session_Invitation.objects.create(session = new_session)
         return HttpResponseRedirect(reverse("charlist:SessionSelector"))
+    
+def join_session(request: HttpRequest,invitation_key):
+    try:
+        session = Session.objects.get(session_invitation__key = invitation_key)
+    except(Session_Invitation.DoesNotExist):
+        return HttpResponse("Invalid invitation key")
+    current_user = request.user
+    user_is_gm = Session_GM.objects.filter(Q(gm = current_user) & Q(session=session)).exists()
+    user_is_player = Session_User.objects.filter(Q(user = current_user) & Q(session = session)).exists()
+    user_already_in = user_is_gm | user_is_player
+
+    if(user_already_in):
+        return HttpResponse("You are already in this session")
+    else:
+        Session_User.objects.create(session=session,user=current_user)
+        return HttpResponseRedirect(reverse("charlist:CharSelector",kwargs={
+            "session_id" : session.id,
+            }))
+    
 
 class SessionSelection(LoginRequiredMixin,TemplateView):
     login_url="admin/"
@@ -39,10 +60,28 @@ class SessionSelection(LoginRequiredMixin,TemplateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         cur_user = self.request.user
         context = super().get_context_data(**kwargs)
-        context["sessions"] = Session.objects.filter(
+        sessions = Session.objects.filter(
             Q(session_gm__gm = cur_user) | Q(session_user__user = cur_user)
             )
+        session_data = []
+        for session in sessions:
+            try:
+                invitation = Session_Invitation.objects.get(session=session)
+            except Session_Invitation.DoesNotExist:
+                invitation = Session_Invitation.objects.create(session = session)
+
+            session_data.append({
+                    'info': session,
+                    'invite_link': self.request.build_absolute_uri(
+                        reverse('charlist:JoinSession',
+                                 kwargs={'invitation_key': invitation.key}))
+                })
+
+        
+        context["sessions"]=session_data
         return context
+    
+
     
 class CharSelector(TemplateView):
     template_name= "charlist/CharSelector.html"
@@ -78,7 +117,7 @@ def add_char(request,session_id):
         
         return HttpResponseRedirect(reverse("charlist:CharListStats",kwargs={
             "session_id":session_id,
-            "char_name":char_name
+            "char_id":new_character.id
         }))
 
 class CharListStats(TemplateView):
