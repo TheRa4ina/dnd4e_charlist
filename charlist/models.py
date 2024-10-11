@@ -9,6 +9,8 @@ class Session(models.Model):
     name = models.CharField(max_length=200)
 
 class Session_Invitation(models.Model):
+    def __str__(self) -> str:
+        return f"invite to: {self.session.name}"
     session = models.ForeignKey(Session,on_delete=models.CASCADE)
     key = models.CharField(max_length=128,unique=True)
 
