@@ -60,9 +60,25 @@ class SessionSelection(LoginRequiredMixin,TemplateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         cur_user = self.request.user
         context = super().get_context_data(**kwargs)
-        context["sessions"] = Session.objects.filter(
+        sessions = Session.objects.filter(
             Q(session_gm__gm = cur_user) | Q(session_user__user = cur_user)
             )
+        session_data = []
+        for session in sessions:
+            try:
+                invitation = Session_Invitation.objects.get(session=session)
+            except Session_Invitation.DoesNotExist:
+                invitation = Session_Invitation.objects.create(session = session)
+
+            session_data.append({
+                    'info': session,
+                    'invite_link': self.request.build_absolute_uri(
+                        reverse('charlist:JoinSession',
+                                 kwargs={'invitation_key': invitation.key}))
+                })
+
+        
+        context["sessions"]=session_data
         return context
     
 
