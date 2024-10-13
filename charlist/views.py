@@ -1,6 +1,6 @@
 from typing import Any
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect,HttpRequest
+from django.http import HttpResponse, HttpResponseRedirect,HttpRequest,HttpResponseForbidden
 from django.views.generic.base import TemplateView
 from django.core import exceptions
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from django.urls import reverse
 from django.db.models import Q
+from functools import wraps
+from django.views import View
 
 # Hard coded af, waiting for xdmav's models
 user_value = {
@@ -21,10 +23,35 @@ user_value = {
     }
 }
 
+def user_is_in_session(user, session : Session | int) -> bool:
+    if(user.is_anonymous):
+        return False
+    user_is_gm = Session_GM.objects.filter(Q(gm = user) & Q(session=session)).exists()
+    user_is_player = Session_User.objects.filter(Q(user = user) & Q(session = session)).exists()
+    return user_is_gm | user_is_player
+
+# maybe i can dry this session access, but i see no actually not bloated way
+class SessionAccessRequiredMixin(LoginRequiredMixin, View):
+    def dispatch(self, request, *args, **kwargs):
+        # Use the session_id from URL kwargs    
+        session_id = kwargs.get('session_id')# this shit is hardcoded, not sure how to make differently 
+        if not user_is_in_session(request.user, session_id):
+            return HttpResponseForbidden("You dont have access to this session")
+        return super().dispatch(request, *args, **kwargs)    
+def session_access_required(function=None):
+    def wrapper(request, *args, **kwargs):
+        user=request.user  
+        session = kwargs.get("session_id")
+        if not (user_is_in_session(user,session)):
+            return HttpResponseForbidden("You dont have access to this session")
+        else:
+            return function(request, *args, **kwargs)
+    return wrapper
+    
 class SessionCreator(LoginRequiredMixin,TemplateView):
     template_name="charlist/SessionCreator.html"
 
-@login_required()
+@login_required
 def add_session(request: HttpRequest):
     try:
         session_name = request.POST["name"]
@@ -37,18 +64,15 @@ def add_session(request: HttpRequest):
         Session_Invitation.objects.create(session = new_session)
         return HttpResponseRedirect(reverse("charlist:SessionSelector"))
 
-@login_required()
+@login_required
 def join_session(request: HttpRequest,invitation_key):
     try:
         session = Session.objects.get(session_invitation__key = invitation_key)
     except(Session_Invitation.DoesNotExist):
         return HttpResponse("Invalid invitation key")
     current_user = request.user
-    user_is_gm = Session_GM.objects.filter(Q(gm = current_user) & Q(session=session)).exists()
-    user_is_player = Session_User.objects.filter(Q(user = current_user) & Q(session = session)).exists()
-    user_already_in = user_is_gm | user_is_player
 
-    if(user_already_in):
+    if(user_is_in_session(current_user,session)):
         return HttpResponse("You are already in this session")
     else:
         Session_User.objects.create(session=session,user=current_user)
@@ -81,8 +105,9 @@ class SessionSelection(LoginRequiredMixin,TemplateView):
         context["sessions"]=session_data
         return context
     
-class CharSelector(LoginRequiredMixin,TemplateView):
+class CharSelector(SessionAccessRequiredMixin,TemplateView):
     template_name= "charlist/CharSelector.html"
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         current_user = self.request.user
         context = super().get_context_data(**kwargs)
@@ -92,10 +117,10 @@ class CharSelector(LoginRequiredMixin,TemplateView):
             )
         return context
     
-class CharCreator(LoginRequiredMixin,TemplateView):
+class CharCreator(SessionAccessRequiredMixin,TemplateView):
     template_name="charlist/CharCreator.html"
 
-@login_required()
+@session_access_required
 def add_char(request,session_id):
     try:
         char_name = request.POST["name"]
@@ -119,8 +144,15 @@ def add_char(request,session_id):
             "char_id":new_character.id
         }))
 
-class CharListStats(LoginRequiredMixin,TemplateView):
+class CharListStats(SessionAccessRequiredMixin,TemplateView):
     template_name = "charlist/CharListStats.html"
+
+    def get(self, request, *args, **kwargs):
+        session = self.kwargs.get('session_id')
+        if not user_is_in_session(self.request.user,session):
+            return HttpResponseForbidden()
+        return super().get(request, *args, **kwargs)
+    
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["basis"] = ["name","class","race","size","age",
