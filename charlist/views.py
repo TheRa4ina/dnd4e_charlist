@@ -76,12 +76,8 @@ class SessionSelection(LoginRequiredMixin,TemplateView):
                         reverse('charlist:JoinSession',
                                  kwargs={'invitation_key': invitation.key}))
                 })
-
-        
         context["sessions"]=session_data
         return context
-    
-
     
 class CharSelector(TemplateView):
     template_name= "charlist/CharSelector.html"
