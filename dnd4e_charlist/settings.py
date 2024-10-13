@@ -31,7 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [os.getenv("LAN_HOST")]
 
-
+LOGIN_URL = "/admin/"
 # Application definition
 
 INSTALLED_APPS = [

@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect,HttpRequest
 from django.views.generic.base import TemplateView
 from django.core import exceptions
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from .models import *
 from django.urls import reverse
 from django.db.models import Q
@@ -20,9 +21,10 @@ user_value = {
     }
 }
 
-class SessionCreator(TemplateView):
+class SessionCreator(LoginRequiredMixin,TemplateView):
     template_name="charlist/SessionCreator.html"
 
+@login_required()
 def add_session(request: HttpRequest):
     try:
         session_name = request.POST["name"]
@@ -34,7 +36,8 @@ def add_session(request: HttpRequest):
         Session_GM.objects.create(session=new_session,gm=current_user)
         Session_Invitation.objects.create(session = new_session)
         return HttpResponseRedirect(reverse("charlist:SessionSelector"))
-    
+
+@login_required()
 def join_session(request: HttpRequest,invitation_key):
     try:
         session = Session.objects.get(session_invitation__key = invitation_key)
@@ -55,7 +58,6 @@ def join_session(request: HttpRequest,invitation_key):
     
 
 class SessionSelection(LoginRequiredMixin,TemplateView):
-    login_url="admin/"
     template_name = "charlist/SessionSelection.html"
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         cur_user = self.request.user
@@ -79,7 +81,7 @@ class SessionSelection(LoginRequiredMixin,TemplateView):
         context["sessions"]=session_data
         return context
     
-class CharSelector(TemplateView):
+class CharSelector(LoginRequiredMixin,TemplateView):
     template_name= "charlist/CharSelector.html"
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         current_user = self.request.user
@@ -90,9 +92,10 @@ class CharSelector(TemplateView):
             )
         return context
     
-class CharCreator(TemplateView):
+class CharCreator(LoginRequiredMixin,TemplateView):
     template_name="charlist/CharCreator.html"
 
+@login_required()
 def add_char(request,session_id):
     try:
         char_name = request.POST["name"]
@@ -116,7 +119,7 @@ def add_char(request,session_id):
             "char_id":new_character.id
         }))
 
-class CharListStats(TemplateView):
+class CharListStats(LoginRequiredMixin,TemplateView):
     template_name = "charlist/CharListStats.html"
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
