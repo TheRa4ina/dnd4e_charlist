@@ -1,14 +1,11 @@
 from typing import Any
-from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect,HttpRequest,HttpResponseForbidden
 from django.views.generic.base import TemplateView
-from django.core import exceptions
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.urls import reverse
 from django.db.models import Q
-from functools import wraps
 from django.views import View
 
 # Hard coded af, waiting for xdmav's models
