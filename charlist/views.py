@@ -148,9 +148,16 @@ class CharListStats(SessionAccessRequiredMixin,TemplateView):
     template_name = "charlist/CharListStats.html"
 
     def get(self, request, *args, **kwargs):
-        session = self.kwargs.get('session_id')
-        if not user_is_in_session(self.request.user,session):
-            return HttpResponseForbidden()
+        session_id = self.kwargs.get('session_id')
+        char_id = self.kwargs.get('char_id')
+        user = self.request.user
+        char_is_in_session = Character.objects.filter(
+            session_id=session_id,
+            user_id = user,# we need to check if this char is even is current users char
+            pk=char_id).exists()
+        if not char_is_in_session:
+            return HttpResponseForbidden("Not your character, or you are in a wrong session")
+
         return super().get(request, *args, **kwargs)
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
