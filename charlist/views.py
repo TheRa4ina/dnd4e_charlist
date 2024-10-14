@@ -67,7 +67,7 @@ def add_session(request: HttpRequest):
 def join_session(request: HttpRequest,invitation_key):
     try:
         session = Session.objects.get(session_invitation__key = invitation_key)
-    except(Session_Invitation.DoesNotExist):
+    except(Session.DoesNotExist):
         return HttpResponse("Invalid invitation key")
     current_user = request.user
 
