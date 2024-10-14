@@ -21,6 +21,10 @@
     </div>
     {%endfor%}
   </div>
+  <div class="session_add_container">
+    <button id="create-session-btn-redirect" type="button">Create new session</button>
+  </div>
+  <!--i use this because intellisense complaining on django's syntax, and vscode django extension breaks html-->
   <script>
     function copyToClipboard(button, url) {
       navigator.clipboard.writeText(url).then(
@@ -33,7 +37,9 @@
         err => console.error('Could not copy text: ', err) // Log the error
       );
     }
-
+    document.getElementById('create-session-btn-redirect').onclick = function () {
+      location.href = "{% url 'charlist:SessionCreator' %}";
+    };
   </script>
 
 </body>
