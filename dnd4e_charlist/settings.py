@@ -36,6 +36,7 @@ LOGIN_URL = "/admin/"
 
 INSTALLED_APPS = [
     'charlist.apps.CharlistConfig',
+    'charlistAuth.apps.CharlistauthConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
