@@ -2,23 +2,31 @@
 {% load get_item%}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Characters</title>
   <link rel="stylesheet" href="{%static 'charlist/styles.css'%}">
 </head>
+
 <body>
-    <div class="characters_container">
-        {%for char in characters%}
-        <div class="character">
-          <!-- Это берется из источников -->
-            <a href="{% url 'charlist:CharListStats' session_id=session_id char_id=char.id%}">{{char.name}}</a>
-        </div>
-        {%endfor%}
+  <div class="characters_container">
+    {%for char in characters%}
+    <div class="character">
+      <!-- Это берется из источников -->
+      <a href="{% url 'charlist:CharListStats' session_id=session_id char_id=char.id%}">{{char.name}}</a>
     </div>
-
-
+    {%endfor%}
+  </div>
+  <div class="char_add_container">
+    <button id="create-char-btn-redirect" type="button">Create new character</button>
+  </div>
+  <script>
+    document.getElementById('create-char-btn-redirect').onclick = function () {
+      location.href = "{% url 'charlist:CharCreator' session_id=session_id %}";
+    };
+  </script>
 </body>
 
 </html>

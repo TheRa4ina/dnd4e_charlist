@@ -1,14 +1,11 @@
 from typing import Any
-from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect,HttpRequest,HttpResponseForbidden
 from django.views.generic.base import TemplateView
-from django.core import exceptions
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.urls import reverse
 from django.db.models import Q
-from functools import wraps
 from django.views import View
 
 # Hard coded af, waiting for xdmav's models
@@ -30,11 +27,10 @@ def user_is_in_session(user, session : Session | int) -> bool:
     user_is_player = Session_User.objects.filter(Q(user = user) & Q(session = session)).exists()
     return user_is_gm | user_is_player
 
-# maybe i can dry this session access, but i see no actually not bloated way
+# maybe i can DRY this session access, but i don't know how to make it not bloated
 class SessionAccessRequiredMixin(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
-        # Use the session_id from URL kwargs    
-        session_id = kwargs.get('session_id')# this shit is hardcoded, not sure how to make differently 
+        session_id = kwargs.get('session_id')
         if not user_is_in_session(request.user, session_id):
             return HttpResponseForbidden("You dont have access to this session")
         return super().dispatch(request, *args, **kwargs)    
@@ -68,7 +64,7 @@ def add_session(request: HttpRequest):
 def join_session(request: HttpRequest,invitation_key):
     try:
         session = Session.objects.get(session_invitation__key = invitation_key)
-    except(Session_Invitation.DoesNotExist):
+    except(Session.DoesNotExist):
         return HttpResponse("Invalid invitation key")
     current_user = request.user
 
@@ -153,10 +149,10 @@ class CharListStats(SessionAccessRequiredMixin,TemplateView):
         user = self.request.user
         char_is_in_session = Character.objects.filter(
             session_id=session_id,
-            user_id = user,# we need to check if this char is even is current users char
+            user_id = user,# we need to check if this char belongs to user
             pk=char_id).exists()
-        if not char_is_in_session:
-            return HttpResponseForbidden("Not your character, or you are in a wrong session")
+        if not char_is_in_session:# crazy helpful repsonse...
+            return HttpResponseForbidden("Character doesnt exist, not your character, or you are in a wrong session")
 
         return super().get(request, *args, **kwargs)
     
