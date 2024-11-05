@@ -1,0 +1,17 @@
+<form method="post">
+    {% csrf_token %}
+    <div class="container text-center border border-danger p-4 rounded bg-light shadow my-5">
+      <div class="row">
+        {% for field in character_sheet_form %}
+          <div class="col-md-3 mb-3 d-flex flex-column">
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+          </div>
+          {% if forloop.counter|divisibleby:4 and not forloop.last %}
+            </div><div class="row">
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+</form>

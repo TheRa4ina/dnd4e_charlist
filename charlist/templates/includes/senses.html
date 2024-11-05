@@ -1,0 +1,27 @@
+<div class="container my-4 border border-danger p-4 rounded bg-light shadow">
+    <div class="row text-center bg-danger text-white py-2">
+      <div class="col">
+        <h5>Score</h5>
+      </div>
+      <div class="col">
+        <h5>Passive Sense</h5>
+      </div>
+      <div class="col">
+        <h5>Skill Bonus</h5>
+      </div>
+    </div>
+    {% for sense in senses %}
+    <div class="row align-items-center py-2 border-bottom">
+      <div class="col">
+        <input type="number" class="form-control" name="{{ sense }}" id="{{ sense }}" />
+      </div>
+      <div class="col text-center">
+        <label for="{{ sense }}" class="form-label">{{ sense|title }}</label>
+      </div>
+      <div class="col">
+        <input type="number" class="form-control" name="{{ sense }}-bonus" id="{{ sense }}-bonus" readonly />
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  

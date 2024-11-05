@@ -13,7 +13,7 @@
               <button type="button" class="btn btn-outline-danger btn-lg rounded">
                   <a class="text-decoration-none text-reset" href="{% url 'charlist:SessionCreator' %}">Create session</a>
               </button>
-              <button type="button" class="btn btn-outline-danger btn-lg rounded">
+              <button type="button" class="btn btn-outline-danger btn-lg rounded" style="display: inline; margin-left: 10px;">
                   <a class="text-decoration-none text-reset" href="{% url 'charlist:SessionSelector' %}">My sessions</a>
               </button>
               <form action="{% url 'user:logout' %}" method="post" style="display: inline; margin-left: 40px;">

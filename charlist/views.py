@@ -16,11 +16,13 @@ from django.views.generic.base import TemplateView
 from .constants import (
     ACCESS_ERROR_MESSAGE,
     ALREAD_LOGGED_IN_USER_ERROR,
+    DEFENSE_LABELS,
     INVALID_INVITATION_KEY_ERROR_MESSAGE,
     NON_EXISTENT_CHARACTER_ERRROR,
     POST_REQUEST_ERROR_MESSAGE,
     USER_VALUE,
 )
+from .forms import GeneralCharacteristicsForm,DefensesForm
 from .models import (
     Ability,
     Character,
@@ -32,6 +34,7 @@ from .models import (
     Session_User,
     Skill
 )
+
 
 
 def user_is_in_session(user, session: Session | int) -> bool:
@@ -191,6 +194,7 @@ class CharListStats(SessionAccessRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
+        context["character_sheet_form"] = GeneralCharacteristicsForm()
         context["basis"] = ["name", "class", "race", "size", "age",
                             "gender", "height", "weight", "algnment",
                             "deity", "max-hp", "surges-day", "level"]
@@ -198,7 +202,7 @@ class CharListStats(SessionAccessRequiredMixin, TemplateView):
             "ability", flat=True)  # flat, so it returns single values
         context["skills"] = Skill.objects.all()
         context["senses"] = ["insight", "perception"]
-        context["defenses"] = ["armor_coefficient",
-                               "fortitude", "reflex", "will"]
+        context["defenses_form"] = DefensesForm()
+        context["defense_labels"] = DEFENSE_LABELS
         context['user_value'] = USER_VALUE
         return context

@@ -1,0 +1,26 @@
+<form method="post">
+    {% csrf_token %}
+    <div class="container text-center border border-danger p-4 rounded bg-light shadow my-5">
+        <div class="container">
+            <div class="row mb-3">
+                {% for field in defenses_form %}
+                    <div class="col-md-3 mb-3 d-flex flex-column">
+                        <label for="{{ field.id_for_label }}" class="form-label" onclick="toggleExtraFields('{{ field.id_for_label }}-extras')">
+                            {{ field.label }}
+                        </label>
+                        {{ field }}
+                        {{ field.errors }}
+                        <div id="{{ field.id_for_label }}-extras" class="mt-2" style="display: none;">
+                            {% for label in defense_labels %}
+                            <div class="row mb-3">
+                                <div class="col text-start">{{ label }}</div>
+                                <input type="text" class="form-control"/>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</form>

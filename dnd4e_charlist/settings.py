@@ -60,6 +60,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dnd4e_charlist.wsgi.application'
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
