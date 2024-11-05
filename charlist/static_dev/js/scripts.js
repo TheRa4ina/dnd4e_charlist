@@ -9,7 +9,3 @@ function copyToClipboard(button, url) {
       err => console.error('Could not copy text: ', err)
     );
   }
-  document.getElementById('create-session-btn-redirect').onclick = function () {
-    location.href = "{% url 'charlist:SessionCreator' %}";
-  };
-  
