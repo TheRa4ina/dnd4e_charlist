@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'livereload',
     'django.contrib.staticfiles',
+    'django_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -70,7 +71,6 @@ DATABASES = {
 }
 
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -94,6 +94,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+STATICFILES_DIRS = [BASE_DIR / 'charlist' / 'static_dev']
 
 STATIC_URL = 'static/'
 

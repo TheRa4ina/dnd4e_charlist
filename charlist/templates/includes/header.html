@@ -1,0 +1,32 @@
+{% load static %}
+<header>
+  <nav class="navbar navbar-light" style="background-color: pink">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'charlist:SessionSelector' %}">
+        <img src="{% static 'img/logo.png' %}" width="50" height="50" class="d-inline-block align-top" alt="">
+        <h1 class="d-inline-block align-top">DnD4 Character List</h1>
+      </a>
+      {% with request.resolver_match.view_name as view_name %}
+        <ul class="nav  nav-pills">
+          {% if user.is_authenticated %}
+            <div class="btn-group" role="group" aria-label="Basic outlined example">
+              <button type="button" class="btn btn-outline-danger btn-lg"><a class="text-decoration-none text-reset"
+                  href="{% url 'charlist:SessionCreator' %}">Create session</a></button>
+              <button type="button" class="btn btn-outline-danger btn-lg"><a class="text-decoration-none text-reset"
+                  href="{% url 'charlist:SessionSelector' %}">My sessions</a></button>
+              <button type="button" class="btn btn-outline-danger btn-lg"><a class="text-decoration-none text-reset"
+                  href="{% url 'logout' %}">Log Out</a></button>
+            </div>
+          {% else %}
+            <div class="btn-group" role="group" aria-label="Basic outlined example">
+              <button type="button" class="btn btn-outline-danger"><a class="text-decoration-none text-reset"
+                  href="{% url 'login' %}">Sign In</a></button>
+              <button type="button" class="btn btn-outline-danger"><a class="text-decoration-none text-reset"
+                  href="{% url 'registration' %}">Sign Up</a></button>
+            </div>
+          {% endif %}
+        </ul>
+      {% endwith %}
+    </div>
+  </nav>
+</header>
