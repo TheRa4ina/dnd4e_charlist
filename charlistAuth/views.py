@@ -2,14 +2,14 @@ from django import forms
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LogoutView
 from django.shortcuts import render, redirect
 
-
-# Create your views here.
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=65)
     password = forms.CharField(max_length=65, widget=forms.PasswordInput)
+
 
 class RegistrationForm(UserCreationForm):
     class Meta:
@@ -33,6 +33,7 @@ def login_page(request):
     form = LoginForm()
     return render(request, "auth/login.html", {"form": form})
 
+
 def registration_page(request):
     if request.method == "POST":
         form = RegistrationForm(request.POST)
@@ -43,3 +44,4 @@ def registration_page(request):
             return redirect("/")
     form = RegistrationForm()
     return render(request, "auth/registration.html", {"form": form})
+

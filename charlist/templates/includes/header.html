@@ -10,19 +10,23 @@
         <ul class="nav  nav-pills">
           {% if user.is_authenticated %}
             <div class="btn-group" role="group" aria-label="Basic outlined example">
-              <button type="button" class="btn btn-outline-danger btn-lg"><a class="text-decoration-none text-reset"
-                  href="{% url 'charlist:SessionCreator' %}">Create session</a></button>
-              <button type="button" class="btn btn-outline-danger btn-lg"><a class="text-decoration-none text-reset"
-                  href="{% url 'charlist:SessionSelector' %}">My sessions</a></button>
-              <button type="button" class="btn btn-outline-danger btn-lg"><a class="text-decoration-none text-reset"
-                  href="{% url 'logout' %}">Log Out</a></button>
-            </div>
+              <button type="button" class="btn btn-outline-danger btn-lg rounded">
+                  <a class="text-decoration-none text-reset" href="{% url 'charlist:SessionCreator' %}">Create session</a>
+              </button>
+              <button type="button" class="btn btn-outline-danger btn-lg rounded">
+                  <a class="text-decoration-none text-reset" href="{% url 'charlist:SessionSelector' %}">My sessions</a>
+              </button>
+              <form action="{% url 'user:logout' %}" method="post" style="display: inline; margin-left: 40px;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-outline-danger btn-lg square-btn">Log Out</button>
+              </form>
+          </div>        
           {% else %}
             <div class="btn-group" role="group" aria-label="Basic outlined example">
               <button type="button" class="btn btn-outline-danger"><a class="text-decoration-none text-reset"
-                  href="{% url 'login' %}">Sign In</a></button>
+                  href="{% url 'user:login' %}">Sign In</a></button>
               <button type="button" class="btn btn-outline-danger"><a class="text-decoration-none text-reset"
-                  href="{% url 'registration' %}">Sign Up</a></button>
+                  href="{% url 'user:registration' %}">Sign Up</a></button>
             </div>
           {% endif %}
         </ul>
