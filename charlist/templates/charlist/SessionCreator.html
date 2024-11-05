@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
-{% load get_item %}
 {% block title %}
     Сreating a new session
 {% endblock %}
 {% block content %}
+<h1 class="mb-4 d-flex justify-content-center">Сreating a new session</h1>
 <div class="container d-flex justify-content-center align-items-center">
     <form action="{% url 'charlist:AddSession' %}" method="POST" class="border border-danger p-4 rounded bg-light shadow">
         {% csrf_token %}

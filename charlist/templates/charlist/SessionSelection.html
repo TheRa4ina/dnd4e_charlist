@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
-{% load get_item %}
 {% block title %}
   My sessions
 {% endblock %}
 {% block content %}
+<h1 class="mb-4 d-flex justify-content-center">My sessions</h1>
 <div class="container mt-5">
-  <div class="sessions_container text-center">
+  <div class="sessions_container text-center border border-danger p-4 rounded bg-light shadow">
     <div class="row justify-content-center">
       {% for session in sessions %}
       <div class="col-md-8 mb-3">
@@ -23,7 +23,7 @@
     </div>
   </div>
   <div class="session_add_container text-center mt-4">
-    <button id="create-session-btn-redirect" type="button" class="btn btn-outline-danger">
+    <button id="create-session-btn-redirect" type="button" class="btn btn-danger">
       <a class="text-decoration-none text-reset" href="{% url 'charlist:SessionCreator' %}">Create new session</a>
     </button>
   </div>
