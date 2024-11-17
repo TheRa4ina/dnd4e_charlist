@@ -18,3 +18,22 @@ USER_VALUE = {
         'charisma': 17,
     }
 }
+SKILL_DEPENDENCIES = {
+    "acrobatic": "Dexterity",
+    "arcana": "Intelligence",
+    "athletic": "Strength",
+    "bluff": "Charisma",
+    "diplomacy": "Charisma",
+    "dungeoning": "Wisdom",
+    "endurange": "Strength",
+    "heal": "Wisdom",
+    "history": "Intelligence",
+    "insight": "Wisdom",
+    "intimidate": "Charisma",
+    "nature": "Wisdom",
+    "perception": "Wisdom",
+    "religion": "Intelligence",
+    "stealth": "Dexterity",
+    "streetwise": "Charisma",
+    "thievery": "Dexterity"
+}

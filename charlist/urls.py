@@ -32,4 +32,14 @@ urlpatterns = [
         views.CharListStats.as_view(),
         name="CharListStats"
     ),
+    path(
+        'save_model_form_data/<slug:model_form_name>/',
+        views.save_model_form_data,
+        name='save_model_form_data'
+    ),
+    path(
+        'save_handwritten_form_data/<str:model_form_name>/',
+        views.save_handwritten_form_data,
+        name='save_handwritten_form_data'
+    ),
 ]

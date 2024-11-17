@@ -10,16 +10,6 @@ function copyToClipboard(button, url) {
     );
   }
 
-function toggleExtraFields(id) {
-    const element = document.getElementById(id);
-    if (element.style.display === "none") {
-        element.style.display = "block";
-    } else {
-        element.style.display = "none";
-    }
-}
-
-let clickCount = 0;
 
 function handleFooterClick() {
     clickCount++;
@@ -28,3 +18,5 @@ function handleFooterClick() {
         document.getElementById("my-session-header").innerText = messageText;
     }
 }
+
+
