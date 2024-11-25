@@ -12,6 +12,7 @@ from django.http import (
 from django.urls import reverse
 from django.views import View
 from django.views.generic.base import TemplateView
+import re
 
 from .constants import (
     ACCESS_ERROR_MESSAGE,
@@ -40,6 +41,9 @@ from .models import (
 from django.http import JsonResponse
 
 
+
+
+# DRY this two ?
 def user_is_in_session(user, session: Session | int) -> bool:
     if user.is_anonymous:
         return False
@@ -48,11 +52,6 @@ def user_is_in_session(user, session: Session | int) -> bool:
         Q(user=user) & Q(session=session)
     ).exists()
     return user_is_gm | user_is_player
-
-
-# maybe i can DRY this session access, but i dunno how to make it not bloated
-
-
 class SessionAccessRequiredMixin(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         session_id = kwargs.get("session_id")
@@ -278,12 +277,6 @@ def save_model_form_data(request, model_form_name):
                 character.save()
             return JsonResponse({"message": "Data saved successfully!"})
     return JsonResponse({"error": "Invalid request method."}, status=405)
-
-
-
-
-
-import re
 
 def save_handwritten_form_data(request, model_form_name):
     if request.method == "POST":
