@@ -18,7 +18,7 @@ from .constants import (
     ALREAD_LOGGED_IN_USER_ERROR,
     DEFENSE_LABELS,
     INVALID_INVITATION_KEY_ERROR_MESSAGE,
-    NON_EXISTENT_CHARACTER_ERRROR,
+    NON_EXISTENT_CHARACTER_ERROR,
     POST_REQUEST_ERROR_MESSAGE,
     USER_VALUE,
     SKILL_DEPENDENCIES,
@@ -197,7 +197,7 @@ class CharListStats(SessionAccessRequiredMixin, TemplateView):
             pk=char_id,
         ).exists()
         if not char_is_in_session:  # crazy helpful repsonse...
-            return HttpResponseForbidden(NON_EXISTENT_CHARACTER_ERRROR)
+            return HttpResponseForbidden(NON_EXISTENT_CHARACTER_ERROR)
 
         return super().get(request, *args, **kwargs)
 

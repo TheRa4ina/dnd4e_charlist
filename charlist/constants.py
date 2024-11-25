@@ -2,7 +2,7 @@ ACCESS_ERROR_MESSAGE = "You dont have access to this session"
 ALREAD_LOGGED_IN_USER_ERROR = "You are already in this session"
 DEFENSE_LABELS = ["10 + 1/2 lvl", "Ability", "Armor", "Class"]
 INVALID_INVITATION_KEY_ERROR_MESSAGE = "Invalid invitation key"
-NON_EXISTENT_CHARACTER_ERRROR = (
+NON_EXISTENT_CHARACTER_ERROR = (
     'Character doesnt exist, not your character, '
     'or you are in a wrong session'
 )
