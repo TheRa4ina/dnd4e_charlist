@@ -156,8 +156,9 @@ function getCSRFToken() {
 }
 
 document.querySelectorAll("form").forEach(form => {
+    const debouncedSendData = debounce(sendData, 1000);
     form.querySelectorAll('input, select, textarea').forEach(input => {
-        input.addEventListener('change', debounce(sendData, 1000));  
+        input.addEventListener('change', debouncedSendData);  
     });
 });
 
