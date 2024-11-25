@@ -297,19 +297,13 @@ def save_handwritten_form_data(request, model_form_name):
                 score = data.get(ability)
                 print(score)
                 if not score:
-                    continue  # Если нет значения для этой способности, пропускаем
+                    continue
 
-                # Преобразуем в целое число
                 score = int(score)
-
-                # Вычисляем модификатор способности
                 modifier = (score - 10) // 2
 
-                # Находим соответствующую способность в базе
                 try:
-                    print('CERFFFFFFFFFFFFFFFFFFFFF', ability)
                     ability_obj = Ability.objects.get(ability=ability)
-                    print(ability_obj)
                 except Ability.DoesNotExist:
                     return JsonResponse({"error": f"Ability {ability} not found."}, status=404)
 
@@ -322,7 +316,6 @@ def save_handwritten_form_data(request, model_form_name):
                     character_ability, created = Character_Ability.objects.get_or_create(character_id=character.id, ability_id=ability_obj)
 
                     character_ability.score = score
-                    print(character_ability.score, 'сукааааа')
                     character_ability.save()  # Сохраняем обновленную информацию
 
                 except Exception as e:
