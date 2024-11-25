@@ -155,11 +155,6 @@ function getCSRFToken() {
     return document.cookie.split('; ').find(row => row.startsWith('csrftoken=')).split('=')[1];
 }
 
-function getCSRFToken() {
-    return document.cookie.split('; ').find(row => row.startsWith('csrftoken=')).split('=')[1];
-}
-
-
 document.querySelectorAll("form").forEach(form => {
     form.querySelectorAll('input, select, textarea').forEach(input => {
         input.addEventListener('change', debounce(sendData, 1000));  
