@@ -32,32 +32,7 @@ function calculateModifier(score) {
 }
 
 
-   function updateSkills() {
-    const skillElements = document.querySelectorAll('.skill_value');  
-    skillElements.forEach(skillElement => {
-        const skillName = skillElement.id; 
-        const dependentAbility = SKILL_DEPENDENCIES[skillName.toLowerCase()]; 
-        const abilityScore = parseInt(document.getElementById(dependentAbility.toLowerCase()).value) || 0;  
 
-        const mod = calculateModifier(abilityScore); 
-        let skillMod = mod;  
-
-      
-        const checkbox = document.querySelector(`#checkbox-${skillName}`);
-        if (checkbox && checkbox.checked) {
-            skillMod += 5;  
-        }
-
- 
-        skillElement.textContent = skillMod;  
-
-        console.log(`Updated ${skillName}: mod=${skillMod}`);
-        const senseBonusField = document.getElementById(`${skillName}-bonus`);
-            if (senseBonusField) {
-                senseBonusField.value = skillMod;  // Дублируем значение навыка в бонус чувств
-            }
-    });
-}
 
 
 document.querySelectorAll('.skill-trained-checkbox').forEach(checkbox => {
@@ -66,6 +41,32 @@ document.querySelectorAll('.skill-trained-checkbox').forEach(checkbox => {
     });
 });
 
+function updateSkills() {
+    const skillElements = document.querySelectorAll('.skill_value');
+    skillElements.forEach(skillElement => {
+        const skillName = skillElement.id;
+        const dependentAbility = SKILL_DEPENDENCIES[skillName.toLowerCase()];
+        const abilityScore = parseInt(document.getElementById(dependentAbility.toLowerCase()).value) || 0;
+
+        const mod = calculateModifier(abilityScore);
+        let skillMod = mod;
+
+
+        const checkbox = document.querySelector(`#checkbox-${skillName}`);
+        if (checkbox && checkbox.checked) {
+            skillMod += 5;
+        }
+
+
+        skillElement.textContent = skillMod;
+
+        console.log(`Updated ${skillName}: mod=${skillMod}`);
+        const senseBonusField = document.getElementById(`${skillName}-bonus`);
+        if (senseBonusField) {
+            senseBonusField.value = skillMod;  // Дублируем значение навыка в бонус чувств
+        }
+    });
+}
 
 function updateModifiers() {
     const abilityInputs = document.querySelectorAll('.ability-input');
@@ -87,14 +88,16 @@ function updateModifiers() {
         console.log(`Updated ${abilityId}: mod=${mod}, modPlus=${modPlus}`);
     });
 
-    
+}
+
+function updateAbilityDependencies(){
+    updateModifiers();
     updateSkills();
 }
 
-
 document.querySelectorAll('.ability-input').forEach(input => {
     input.addEventListener('input', () => {
-        updateModifiers();  
+        updateAbilityDependencies();
     });
 });
 
@@ -148,12 +151,6 @@ function getCSRFToken() {
     return document.cookie.split('; ').find(row => row.startsWith('csrftoken=')).split('=')[1];
 }
 
-
-document.addEventListener("DOMContentLoaded", () => {
-    updateModifiers(); 
-});
-
-
 function getCSRFToken() {
     return document.cookie.split('; ').find(row => row.startsWith('csrftoken=')).split('=')[1];
 }
@@ -167,11 +164,8 @@ document.querySelectorAll("form").forEach(form => {
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Script loaded!");
+    updateAbilityDependencies();  
 
-
-    updateModifiers();  
-
-  
     const abilityInputs = document.querySelectorAll('.ability-input');
     abilityInputs.forEach(input => {
         input.addEventListener('input', (event) => {
@@ -189,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (modField) modField.value = mod;  
             if (modPlusField) modPlusField.value = modPlus;  
 
-            console.log(`Updated ${abilityId}: mod=${mod}, modPlus=${modPlus}`);
+            // console.log(`Updated ${abilityId}: mod=${mod}, modPlus=${modPlus}`);
         });
     });
 });
