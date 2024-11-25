@@ -121,7 +121,7 @@ class SessionSelection(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         sessions = Session.objects.filter(
             Q(session_gm__gm=cur_user) | Q(session_user__user=cur_user)
-        )
+        ).distinct()    
         session_data = []
         for session in sessions:
             try:
