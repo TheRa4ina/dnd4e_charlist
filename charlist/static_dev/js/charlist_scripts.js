@@ -169,21 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const abilityInputs = document.querySelectorAll('.ability-input');
     abilityInputs.forEach(input => {
         input.addEventListener('input', (event) => {
-            const score = parseInt(event.target.value) || 0;  
-            const abilityId = event.target.id;  
-
-            
-            const mod = calculateModifier(score);  
-            const modPlus = mod + 1;  
-
-           
-            const modField = document.getElementById(`${abilityId}-mod`);
-            const modPlusField = document.getElementById(`${abilityId}-mod-plus`);
-
-            if (modField) modField.value = mod;  
-            if (modPlusField) modPlusField.value = modPlus;  
-
-            // console.log(`Updated ${abilityId}: mod=${mod}, modPlus=${modPlus}`);
+            updateModifiers();
         });
     });
 });
