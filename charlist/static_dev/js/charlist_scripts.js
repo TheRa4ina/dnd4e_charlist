@@ -6,6 +6,14 @@ function debounce(func, delay) {
     };
 }
 
+const DEBUG = false;
+
+function debugLog(...args) {
+  if (DEBUG) {
+    console.log(...args);
+  }
+}
+
 const SKILL_DEPENDENCIES = {
     "acrobatic": "Dexterity",
     "arcana": "Intelligence",
@@ -30,10 +38,6 @@ const SKILL_DEPENDENCIES = {
 function calculateModifier(score) {
     return Math.floor((score - 10) / 2);  
 }
-
-
-
-
 
 document.querySelectorAll('.skill-trained-checkbox').forEach(checkbox => {
     checkbox.addEventListener('change', () => {
@@ -60,7 +64,7 @@ function updateSkills() {
 
         skillElement.textContent = skillMod;
 
-        console.log(`Updated ${skillName}: mod=${skillMod}`);
+        debugLog(`Updated ${skillName}: mod=${skillMod}`);
         const senseBonusField = document.getElementById(`${skillName}-bonus`);
         if (senseBonusField) {
             senseBonusField.value = skillMod;  // Дублируем значение навыка в бонус чувств
@@ -85,7 +89,7 @@ function updateModifiers() {
         if (modField) modField.value = mod; 
         if (modPlusField) modPlusField.value = modPlus;  
 
-        console.log(`Updated ${abilityId}: mod=${mod}, modPlus=${modPlus}`);
+        debugLog(`Updated ${abilityId}: mod=${mod}, modPlus=${modPlus}`);
     });
 
 }
