@@ -1,8 +1,25 @@
 function debounce(func, delay) {
     let timer;
+    function showIndicator() {
+        const indicator = document.getElementById('saving-indicator');
+        if (indicator) {
+            indicator.style.display = 'block'; // Show the indicator
+        }
+    }
+
+    function hideIndicator() {
+        const indicator = document.getElementById('saving-indicator');
+        if (indicator) {
+            indicator.style.display = 'none'; // Hide the indicator
+        }
+    }
     return function (...args) {
+        showIndicator();
         clearTimeout(timer);
-        timer = setTimeout(() => func.apply(this, args), delay);
+        timer = setTimeout(() => {
+            func.apply(this, args)
+            hideIndicator();
+        }, delay);
     };
 }
 
