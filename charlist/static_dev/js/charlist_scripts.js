@@ -138,7 +138,7 @@ function sendData(event) {
 
     formData.append('user', userId);  
     formData.append('session_key', sessionKey);
-    formData.append('character_name', character_name);
+    formData.append('character_id', character_id);
 
    
     let url = '';

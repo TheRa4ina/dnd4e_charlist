@@ -272,11 +272,9 @@ def save_model_form_data(request, model_form_name):
             session = Session.objects.get(pk=session_id)
             form.instance.session = session
             form.instance.user = request.user
-            character_name = request.POST.get("character_name")
+            character_id = request.POST.get("character_id")
             character = Character.objects.filter(
-                user=request.user,
-                session_id=session_id,
-                name=character_name
+                id=character_id
             ).first()
             if model_form_name == "DefensesForm":
                 defense_extra, created = Character_Defenses_Extra.objects.get_or_create(
@@ -299,12 +297,12 @@ def save_handwritten_form_data(request, model_form_name):
     if request.method == "POST":
         data = request.POST
         print(data, model_form_name)
-        character_name = request.POST.get("character_name")
-        character = get_object_or_404(Character, name=character_name)
+        character_id = int(request.POST.get("character_id"))
+        character = get_object_or_404(Character, id=character_id)
 
         if model_form_name == 'abilities':
             # Фильтруем только способности, исключая те, которые содержат "mod" или "mod-plus"
-            abilities = [item for item in data if item not in ('csrfmiddlewaretoken', 'session_key', 'user', 'character_name') and not re.search(r'(mod|mod-plus)', item)]
+            abilities = [item for item in data if item not in ('csrfmiddlewaretoken', 'session_key', 'user', 'character_id') and not re.search(r'(mod|mod-plus)', item)]
             for ability in abilities:
                 score = data.get(ability)
                 print(score)
@@ -313,7 +311,7 @@ def save_handwritten_form_data(request, model_form_name):
 
                 score = int(score)
                 modifier = (score - 10) // 2
-
+                print("_________________")
                 try:
                     ability_obj = Ability.objects.get(ability=ability)
                 except Ability.DoesNotExist:
