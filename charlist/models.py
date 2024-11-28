@@ -163,3 +163,9 @@ class Gm_Notes(models.Model):
     gm = models.ForeignKey(Session_GM, on_delete=models.CASCADE)
     note_name = models.CharField(max_length=100)
     note = models.TextField()
+
+class CharList_Update(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(auto_now=True)
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)

@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.db import transaction
 from django.http import (
     HttpRequest,
     HttpResponse,
@@ -36,6 +37,7 @@ from .models import (
     Session_User,
     Skill,
     Character_Defenses_Extra,
+    CharList_Update,
 )
 
 from django.http import JsonResponse
@@ -44,6 +46,7 @@ from django.http import JsonResponse
 
 
 # DRY this two ?
+# Also they are very dependent on session_id being
 def user_is_in_session(user, session: Session | int) -> bool:
     if user.is_anonymous:
         return False
@@ -63,7 +66,7 @@ class SessionAccessRequiredMixin(LoginRequiredMixin, View):
 def session_access_required(function=None):
     def wrapper(request, *args, **kwargs):
         user = request.user
-        session = kwargs.get("session_id")
+        session = kwargs.get("char_id")
         if not (user_is_in_session(user, session)):
             return HttpResponseForbidden(ACCESS_ERROR_MESSAGE)
         else:
@@ -203,6 +206,8 @@ class CharListStats(SessionAccessRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         character = Character.objects.get(pk=self.kwargs.get("char_id"))
         context = super().get_context_data(**kwargs)
+        context["character_id"] = character.id
+
         defense_data = Character_Defenses_Extra.objects.filter(character=character)
         context["defenses_form"] = DefensesForm(initial={
             'armor_coefficient': defense_data.first().armor_coefficient if defense_data.exists() else 0,
@@ -247,6 +252,16 @@ class CharListStats(SessionAccessRequiredMixin, TemplateView):
 
         return context
 
+def create_charlist_update(user,char_id: int):
+    updates = CharList_Update.objects.filter(user=user, character_id=char_id)
+    if updates.count() > 100:
+        with transaction.atomic():
+            updates.delete()
+        
+    CharList_Update.objects.create(
+        user=user,
+        character=Character.objects.get(pk=char_id),
+    )
 
 def save_model_form_data(request, model_form_name):
     form_class = MODEL_FORM_MAP.get(model_form_name)
@@ -275,6 +290,8 @@ def save_model_form_data(request, model_form_name):
                 for field, value in form.cleaned_data.items():
                     setattr(character, field, value)
                 character.save()
+
+            create_charlist_update(request.user,character.pk)
             return JsonResponse({"message": "Data saved successfully!"})
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
@@ -282,7 +299,9 @@ def save_handwritten_form_data(request, model_form_name):
     if request.method == "POST":
         data = request.POST
         print(data, model_form_name)
-        
+        character_name = request.POST.get("character_name")
+        character = get_object_or_404(Character, name=character_name)
+
         if model_form_name == 'abilities':
             # Фильтруем только способности, исключая те, которые содержат "mod" или "mod-plus"
             abilities = [item for item in data if item not in ('csrfmiddlewaretoken', 'session_key', 'user', 'character_name') and not re.search(r'(mod|mod-plus)', item)]
@@ -302,8 +321,6 @@ def save_handwritten_form_data(request, model_form_name):
 
                 # Сохраняем данные в модель Character_Ability
                 try:
-                    character_name = request.POST.get("character_name")
-                    character = get_object_or_404(Character, name=character_name)
 
                     # Получаем или создаем запись о способности персонажа
                     character_ability, created = Character_Ability.objects.get_or_create(character_id=character.id, ability_id=ability_obj)
@@ -315,6 +332,55 @@ def save_handwritten_form_data(request, model_form_name):
                     return JsonResponse({"error": f"Error saving ability data: {str(e)}"}, status=500)
 
             # Отправляем успешный ответ
+            create_charlist_update(request.user,character.pk)
             return JsonResponse({"message": "Data saved successfully!"})
 
     return JsonResponse({"error": "Invalid request method."}, status=405)
+
+def long_poll(request: HttpRequest,char_id):
+    update = CharList_Update.objects.filter(
+        character = char_id
+    ).order_by('-updated_at').first()
+    last_updated_at = request.GET.get("last_updated_at")
+    db_update = update.updated_at.strftime('%Y-%m-%dT%H:%M:%S')
+    
+    if db_update==last_updated_at[:19]:
+        return JsonResponse({"status": "No update"})
+    else:
+        new_data = {}
+        character_abilities = Character_Ability.objects.filter(character_id=char_id)
+        abilities_data = {
+            str(ability.ability): ability.score for ability in character_abilities
+        }
+        new_data["abilities"] = list(Ability.objects.values_list("ability", flat=True))#DANGEROUS  distinct flag may become disregarded
+        new_data["ability_data"]=abilities_data
+
+        defense_data = Character_Defenses_Extra.objects.filter(character_id = char_id)
+        new_data["defenses"] = {
+            'armor_coefficient': defense_data.first().armor_coefficient if defense_data.exists() else 0,
+            'fortitude': defense_data.first().fortitude if defense_data.exists() else 0,
+            'reflex': defense_data.first().reflex if defense_data.exists() else 0,
+            'will': defense_data.first().will if defense_data.exists() else 0,
+        }
+        character = Character.objects.get(id = char_id)
+        new_data["character"] = {
+                "name": character.name,
+                "char_class": character.char_class,
+                "race": character.race,
+                "xp": character.xp,
+                "size": character.size.__str__(),
+                "gender": character.gender.__str__(),
+                "height": character.height,
+                "weight": character.weight,
+                "alignment": character.alignment,
+                "deity": character.deity,
+                "speed": character.speed,
+                "action_points": character.action_points,
+            }
+        return JsonResponse({
+            "status": "Success",
+            "updated_at": update.updated_at,
+            "new_data" : new_data,
+        })
+
+    

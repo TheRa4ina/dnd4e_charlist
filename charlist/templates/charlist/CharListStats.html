@@ -10,6 +10,7 @@
 display: none;
 z-index: 9999; 
 ">Saving...</div>
+<div id="char-id" data-char-id="{{ character_id }}" style="display:none;"></div>
   <div class="container">
     <div class="row">
 
@@ -50,4 +51,6 @@ z-index: 9999;
   </div>
 
 <script src="{% static 'js/charlist_scripts.js' %}"></script>
+<!-- load in jquery from google's server -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 {% endblock %}

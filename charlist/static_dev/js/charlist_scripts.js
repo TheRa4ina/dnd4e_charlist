@@ -173,7 +173,7 @@ function getCSRFToken() {
 }
 
 document.querySelectorAll("form").forEach(form => {
-    const debouncedSendData = debounce(sendData, 1000);
+    const debouncedSendData = debounce(sendData,2000);
     form.querySelectorAll('input, select, textarea').forEach(input => {
         input.addEventListener('change', debouncedSendData);  
     });
@@ -189,7 +189,77 @@ document.addEventListener("DOMContentLoaded", () => {
             updateModifiers();
         });
     });
+    poll();
 });
+
+let last_updated_at = "";
+function poll() {
+    const char_id = document.getElementById('char-id').getAttribute('data-char-id');
+    $.ajax({
+        url: "/long_poll/"+char_id, // Replace with your actual endpoint
+        method: "GET",
+        data: { last_updated_at: last_updated_at }, // Last update timestamp
+        success: function(response) {
+            if (response.status === "Success") {
+                last_updated_at = response.updated_at;
+                console.log(last_updated_at)
+
+                // Use the new data directly from the response
+                updateToNewData(response.new_data);
+            }
+            setTimeout(poll, 700)
+        },
+        error: function() {
+            setTimeout(poll, 5000); // Retry after 5 seconds
+        }
+    });
+}
+
+function updateToNewData(new_data) {
+    updateToNewAbilites(new_data)
+    updateToNewDefenses(new_data)
+    updateToNewCharacterBase(new_data)
+}
+
+function updateToNewAbilites(new_data){
+    abilities = new_data.abilities;
+    ability_data = new_data.ability_data;
+    abilities.forEach(function (ability) {
+        const abilityElement = document.getElementById(ability);
+
+        if (abilityElement && ability_data[ability] !== undefined) {
+            abilityElement.value = ability_data[ability];
+        }
+    });
+    updateAbilityDependencies();
+
+}
+
+function updateToNewDefenses(new_data){
+    defenses = new_data.defenses;
+
+    ac = document.getElementById("id_armor_coefficient").value = defenses.armor_coefficient;;
+    fortitude = document.getElementById("id_fortitude").value = defenses.fortitude;;
+    reflex = document.getElementById("id_reflex").value = defenses.reflex;;
+    will = document.getElementById("id_will").value = defenses.will;;
+}
+
+function updateToNewCharacterBase(new_data){
+    const character = new_data.character;
+
+    document.getElementById("id_name").value = character.name;
+    document.getElementById("id_char_class").value = character.char_class;
+    document.getElementById("id_race").value = character.race;
+    document.getElementById("id_xp").value = character.xp;
+    document.getElementById("id_size").value = character.size;
+    document.getElementById("id_gender").value = character.gender;
+    document.getElementById("id_height").value = character.height;
+    document.getElementById("id_weight").value = character.weight;
+    document.getElementById("id_alignment").value = character.alignment;
+    document.getElementById("id_deity").value = character.deity;
+    document.getElementById("id_speed").value = character.speed;
+    document.getElementById("id_action_points").value = character.action_points;
+}
 
 
 function toggleExtraFields(id) {
