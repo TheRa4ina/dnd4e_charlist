@@ -9,6 +9,13 @@ class GeneralCharacteristicsForm(forms.ModelForm):
     class Meta:
         model = Character
         exclude = ['session', 'user',]
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['deity'].required = False
+        self.fields['alignment'].required = False
+        self.fields['race'].required = False
+        self.fields['char_class'].required = False
 
     def __str__(self):
         return f"{self.__class__.__name__}"
