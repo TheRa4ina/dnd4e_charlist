@@ -55,6 +55,7 @@ def user_is_in_session(user, session: Session | int) -> bool:
         Q(user=user) & Q(session=session)
     ).exists()
     return user_is_gm | user_is_player
+
 class SessionAccessRequiredMixin(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         session_id = kwargs.get("session_id")
@@ -66,7 +67,7 @@ class SessionAccessRequiredMixin(LoginRequiredMixin, View):
 def session_access_required(function=None):
     def wrapper(request, *args, **kwargs):
         user = request.user
-        session = kwargs.get("char_id")
+        session = kwargs.get("session_id")
         if not (user_is_in_session(user, session)):
             return HttpResponseForbidden(ACCESS_ERROR_MESSAGE)
         else:
@@ -151,10 +152,20 @@ class CharSelector(SessionAccessRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         current_user = self.request.user
+        session_id = kwargs['session_id']
+        session = get_object_or_404(Session, pk=session_id)
+
         context = super().get_context_data(**kwargs)
-        context["characters"] = Character.objects.filter(
-            Q(user=current_user.id) & Q(session__id=context["session_id"])
-        )
+        context["session_id"] = session_id 
+        is_gm = Session_GM.objects.filter(session=session, gm=current_user).exists()
+
+        if is_gm:
+            context["characters"] = Character.objects.filter(session=session)
+        else:
+            context["characters"] = Character.objects.filter(
+                Q(user=current_user) & Q(session=session)
+            )
+
         return context
 
 
@@ -186,6 +197,7 @@ def add_char(request, session_id):
         )
 
 
+
 class CharListStats(SessionAccessRequiredMixin, TemplateView):
     template_name = "charlist/CharListStats.html"
 
@@ -193,12 +205,13 @@ class CharListStats(SessionAccessRequiredMixin, TemplateView):
         session_id = self.kwargs.get("session_id")
         char_id = self.kwargs.get("char_id")
         user = self.request.user
-        char_is_in_session = Character.objects.filter(
+        session = get_object_or_404(Session, pk=session_id)
+        user_is_gm_or_player = Session_GM.objects.filter(Q(gm=user) & Q(session=session)).exists() or Character.objects.filter(
             session_id=session_id,
-            user_id=user,  # we need to check if this char belongs to user
+            user_id=user, 
             pk=char_id,
         ).exists()
-        if not char_is_in_session:  # crazy helpful repsonse...
+        if not user_is_gm_or_player:  
             return HttpResponseForbidden(NON_EXISTENT_CHARACTER_ERROR)
 
         return super().get(request, *args, **kwargs)

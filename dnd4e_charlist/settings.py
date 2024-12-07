@@ -101,3 +101,5 @@ STATICFILES_DIRS = [BASE_DIR / 'charlist' / 'static_dev']
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'charlist:SessionSelector' # Замените на нужный URL
