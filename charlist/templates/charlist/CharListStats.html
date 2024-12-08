@@ -1,104 +1,56 @@
+{% extends "base.html" %}
 {% load static %}
-{% load get_item%}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Charlist {{session_name}}</title>
-  <link rel="stylesheet" href="{%static 'charlist/styles.css'%}">
-  <link rel="stylesheet" href="{%static 'charlist/reset.css'%}">
-  <script src="{%static " charlist/js/scripts.js"%}"></script>
-</head>
-
-<body>
+{% load django_bootstrap5 %}
+{% block title %}
+  Character Sheet
+{% endblock %}
+{% block content %}
+<!-- Forgive me for my sin of putting style in html -->
+<div id="saving-indicator" class="bg-danger p-3 rounded shadow text-white position-fixed top-0 start-0 m-3" style="
+display: none;
+z-index: 9999; 
+">Saving...</div>
+<div id="char-id" data-char-id="{{ character_id }}" style="display:none;"></div>
   <div class="container">
-    <div class="grids">
-      <h1>CHARACTER</h1>
-      <div class="grid_container basis_grid">
-        {%for field in basis%}
-        <div class="basis stat_row">
-          <input type="number" name="{{field}}" id="{{field}}" />
-          <label for="{{field}}">{{field|title}}</label>
+    <div class="row">
+
+      <div class="col-md-5 mb-4">
+        <h1 class="text-center">SENSES</h1>
+        <div class="bg-light p-3 rounded shadow">
+          {% include "includes/senses.html" %}
         </div>
-        {%endfor%}
       </div>
-      <h1>DEFENSES</h1>
-      <div class="grid_container defenses_grid">
-        <div class="defense header">
-          <h1>Score</h1>
-          <h1>Name</h1>
-          <h1>Score+1/2lvl</h1>
+      <div class="col-md-7 mb-4">
+        <h1 class="text-center">DEFENSES</h1>
+        <div class="bg-light p-3 rounded shadow">
+          {% include "includes/defenses.html" %}
         </div>
-        {%for defense in defenses%}
-        <div class="defense stat_row">
-          <!-- Это берется из источников -->
-          <input type="number" name="{{defense}}" id="{{defense}}"/>
-          <label for="{{defense}}">{{defense|title}}</label>
-          <!-- Тут вычисления через js -->
-          <input type="number" name="{{defense}}-mod" id="{{defense}}-mod" readonly />
-        </div>
-        {%endfor%}
       </div>
-      <h1>ABILITIES</h1>
-      <div class="grid_container abilities_grid">
-        <div class="ability header">
-          <h1>Score</h1>
-          <h1>Ability</h1>
-          <h1>Mod</h1>
-          <h1>Mod + 1/2lvl</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-4">
+        <h1 class="text-center">CHARACTER</h1>
+        <div class="bg-light p-3 rounded shadow">
+          {% include "includes/general_characteristics.html" %}
         </div>
-        {%for ability in abilities%}
-        <div class="ability stat_row">
-          <!-- Это берется из источников -->
-          <input type="number" name="{{ability}}"
-           value="{{user_value.abilities|get_item:ability}}" id="{{ability}}"/>
-          <label for="{{ability}}">{{ability|title}}</label>
-          <!-- Тут вычисления через js -->
-          <input type="number" name="{{ability}}-mod" id="{{ability}}-mod" readonly />
-          <input type="number" name="{{ability}}-mod-plus" id="{{ability}}-mod-plus" readonly />
+
+        <h1 class="text-center">ABILITIES</h1>
+        <div class="bg-light p-3 rounded shadow h-50">
+          {% include "includes/abilities.html" %}
         </div>
-        {%endfor%}
-      </div>
-      <h1>SENSES</h1>
-      <div class="grid_container senses_grid">
-        <div class="sense header">
-          <h1>Score</h1>
-          <h1>Passive sense</h1>
-          <h1>Skill bonus</h1>
-        </div>
-        {%for sense in senses%}
-        <div class="sense stat_row">
-          <!-- Тут вычисления через js -->
-          <input type="number" name="{{sense}}" id="{{sense}}"/>
-          <label for="{{sense}}">{{sense|title}}</label>
-          <input type="number" name="{{sense}}-bonus" id="{{sense}}-bonus" readonly />
-        </div>
-        {%endfor%}
       </div>
 
-      <h1>SKILLS</h1>
-      <div class="grid_container skills_grid">
-        <div class="skill header">
-          <h1>Trained</h1>
-          <h1>Score</h1>
-          <h1>Skill name</h1>
-          <h1>Dependent</h1>
-          <!--В теории тут должна быть возможность дополнять поля-->
+      <div class="col-md-6 mb-3 d-flex flex-column justify-content-between">
+        <h1 class="text-center">SKILLS</h1>
+        <div class="bg-light p-3 rounded shadow">
+          {% include "includes/skills.html" %}
         </div>
-        {%for skill in skills%}
-        <div class="skill stat_row">
-          <!-- Тут вычисления через js -->
-          <input type="checkbox" />
-          <div class="skill_value" id="{{skill}}" name="{{skill}}">0</div>
-          <label for="{{skill}}">{{skill|title}}</label>
-          <div class="skill_dependent">Впадлу</div>
-        </div>
-        {%endfor%}
       </div>
     </div>
   </div>
-</body>
 
-</html>
+<script src="{% static 'js/charlist_scripts.js' %}"></script>
+<!-- load in jquery from google's server -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}

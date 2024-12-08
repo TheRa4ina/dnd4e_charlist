@@ -1,47 +1,32 @@
+{% extends "base.html" %}
 {% load static %}
-{% load get_item%}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sessions</title>
-  <link rel="stylesheet" href="{%static 'charlist/styles.css'%}">
-  <script src="{%static " charlist/js/scripts.js"%}"></script>
-</head>
-
-<body>
-  <div class="sessions_container">
-    {%for session in sessions%}
-    <div class="session">
-      <!-- Это берется из источников -->
-      <a href="{% url 'charlist:CharSelector' session_id=session.info.id%}">{{session.info.name}}</a>
-      <button onclick="copyToClipboard(this,'{{ session.invite_link }}')">Copy Invite Link</button>
+{% block title %}
+  My sessions
+{% endblock %}
+{% block content %}
+<h1 id="my-session-header" class="mb-4 d-flex justify-content-center">My sessions</h1>
+<div class="container mt-5">
+  <div class="sessions_container text-center border border-danger p-4 rounded bg-light shadow">
+    <div class="row justify-content-center">
+      {% for session in sessions %}
+      <div class="col-md-8 mb-3">
+        <div class="session border border-3 p-3 mb-3 rounded d-flex justify-content-between align-items-center">
+          <a href="{% url 'charlist:CharSelector' session_id=session.info.id %}" class="text-decoration-none text-danger">
+            {{ session.info.name }}
+          </a>
+          <button class="btn btn-outline-danger btn-sm" onclick="copyToClipboard(this, '{{ session.invite_link }}')">
+            Copy Invite Link
+          </button>
+        </div>
+      </div>
+      {% endfor %}
     </div>
-    {%endfor%}
   </div>
-  <div class="session_add_container">
-    <button id="create-session-btn-redirect" type="button">Create new session</button>
+  <div class="session_add_container text-center mt-4">
+    <button id="create-session-btn-redirect" type="button" class="btn btn-danger">
+      <a class="text-decoration-none text-reset" href="{% url 'charlist:SessionCreator' %}">Create new session</a>
+    </button>
   </div>
-  <!--i use this because intellisense complaining on django's syntax, and vscode django extension breaks html-->
-  <script>
-    function copyToClipboard(button, url) {
-      navigator.clipboard.writeText(url).then(
-        () => {
-          button.innerText = 'Copied!'; // Change button text to "Copied!"
-          setTimeout(() => {
-            button.innerText = 'Copy Invite Link'; // Reset button text after a delay
-          }, 2000); // Change back after 2 seconds
-        },
-        err => console.error('Could not copy text: ', err) // Log the error
-      );
-    }
-    document.getElementById('create-session-btn-redirect').onclick = function () {
-      location.href = "{% url 'charlist:SessionCreator' %}";
-    };
-  </script>
-
-</body>
-
-</html>
+</div>
+<script src="{% static 'js/scripts.js' %}"></script>
+{% endblock %}

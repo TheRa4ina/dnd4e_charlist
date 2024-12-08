@@ -1,0 +1,32 @@
+<form method="POST" data-form-name="{{ character_sheet_form }}" data-form-type="model_form">
+  {% csrf_token %}
+  <div class="container text-center border border-danger p-4 rounded bg-light shadow my-5">
+    <div class="row">
+      {% for field in character_sheet_form %}
+      <div class="col-md-3 mb-3 d-flex flex-column">
+        {{ field.label_tag }}
+        {{ field }}
+        {{ field.errors }}
+      </div>
+      {% if forloop.counter|divisibleby:4 and not forloop.last %}
+    </div>
+    <div class="row">
+      {% endif %}
+      {% endfor %}
+    </div>
+    <div class="container d-flex justify-content-center">
+      <div class="row justify-content-center">
+        <div class="d-flex flex-column text-center">
+          <label for="level" class="form-label">Level</label>
+          <input id="level" type="text" name="level" value="1" disabled class="form-control text-center">
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<script>
+  const userId = "{{ request.user.id }}";
+  const sessionKey = "{{ session_id }}";
+  const character_id = "{{ character_id }}";
+</script>
+

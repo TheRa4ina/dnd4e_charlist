@@ -1,0 +1,43 @@
+{% load filters %}
+<div class="container my-4 border border-danger p-4 rounded bg-light shadow">
+    <div class="row text-center bg-danger text-white py-2">
+        <div class="col">
+            <h5>Trained</h5>
+        </div>
+        <div class="col">
+            <h5>Score</h5>
+        </div>
+        <div class="col">
+            <h5>Skill Name</h5>
+        </div>
+        <div class="col">
+            <h5>Dependent</h5>
+        </div>
+    </div>
+    <form id="skills-form" data-form-name="skills" data-form-type="skills_form">
+        {% for skill in skills %}
+            <div class="row align-items-center py-2 border-bottom">
+                <div class="col text-center">
+                    <input 
+                        type="checkbox" 
+                        class="form-check-input skill-trained-checkbox" 
+                        id="checkbox-{{ skill }}" 
+                        data-skill="{{ skill }}" 
+                        {% if skill in trained_skills %}checked{% endif %}
+                    />
+                </div>
+                <div class="col text-center">
+                    <div class="skill_value border rounded py-1 px-3" id="{{ skill }}" name="{{ skill }}">0</div>
+                </div>
+                <div class="col text-center">
+                    <label for="checkbox-{{ skill }}" class="form-label">{{ skill|title }}</label>
+                </div>
+                <div class="col text-center">
+                    <div class="skill_dependent">{{ skill_dependencies|get_item:skill }}</div>
+                </div>
+            </div>
+        {% endfor %}
+        <input type="hidden" name="selected_skills" id="selected_skills" value=""> 
+    </form>
+    
+</div>

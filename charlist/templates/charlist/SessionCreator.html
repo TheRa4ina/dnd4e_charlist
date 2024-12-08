@@ -1,26 +1,18 @@
+{% extends "base.html" %}
 {% load static %}
-{% load get_item%}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Session creator</title>
-    <link rel="stylesheet" href="{%static 'charlist/styles.css'%}">
-</head>
-
-<body>
-    <div class="container">
-        <form action="{% url 'charlist:AddSession'%}" method="POST">
-            {% csrf_token %}
-            <fieldset>  
-                <label for="name">Название</label>
-                <input type="text" name="name" id="name" required minlength="2">
-            </fieldset>
-            <input type="submit" value="Create">
-        </form> 
-    </div>
-</body>
-
-</html>
+{% block title %}
+    Сreating a new session
+{% endblock %}
+{% block content %}
+<h1 class="mb-4 d-flex justify-content-center">Сreating a new session</h1>
+<div class="container d-flex justify-content-center align-items-center">
+    <form action="{% url 'charlist:AddSession' %}" method="POST" class="border border-danger p-4 rounded bg-light shadow">
+        {% csrf_token %}
+        <fieldset class="mb-3">
+            <label for="name" class="form-label">Session Name</label>
+            <input type="text" name="name" id="name" required minlength="2" class="form-control" placeholder="Enter session name">
+        </fieldset>
+        <button type="submit" class="btn btn-danger w-100">Create</button>
+    </form>
+</div>
+{% endblock %}
