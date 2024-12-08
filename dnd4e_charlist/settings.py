@@ -14,7 +14,9 @@ DEBUG = True
 ALLOWED_HOSTS = [os.getenv("LAN_HOST")]
 
 
-LOGIN_URL = "/admin/"
+LOGIN_URL = "user:login"
+
+FORBIDDEN_PAGE = 'charlist:SessionSelector'
 
 INSTALLED_APPS = [
     'charlist.apps.CharlistConfig',
