@@ -42,6 +42,11 @@ urlpatterns = [
         views.save_handwritten_form_data,
         name='save_handwritten_form_data'
     ),
+    path(
+        'save_selected_skills/',
+        views.save_selected_skills,
+        name='save_selected_skills'
+    ),
         path(
         'long_poll/<int:char_id>/',
         views.long_poll,

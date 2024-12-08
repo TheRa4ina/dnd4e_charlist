@@ -38,9 +38,12 @@ from .models import (
     Skill,
     Character_Defenses_Extra,
     CharList_Update,
+    Character_Trained_Skill
 )
 
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 
 
@@ -262,6 +265,8 @@ class CharListStats(SessionAccessRequiredMixin, TemplateView):
         context["session_id"] = self.kwargs.get("session_id")
         context["character_name"] = character.name
         context["skill_dependencies"] = SKILL_DEPENDENCIES
+        trained_skills = Character_Trained_Skill.objects.filter(character=character).values_list("skill__skill", flat=True)
+        context["trained_skills"] = list(trained_skills)
 
         return context
 
@@ -348,14 +353,14 @@ def save_handwritten_form_data(request, model_form_name):
 
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
-def long_poll(request: HttpRequest,char_id):
+def long_poll(request: HttpRequest, char_id):
     update = CharList_Update.objects.filter(
-        character = char_id
+        character=char_id
     ).order_by('-updated_at').first()
     last_updated_at = request.GET.get("last_updated_at")
     db_update = update.updated_at.strftime('%Y-%m-%dT%H:%M:%S')
     
-    if db_update==last_updated_at[:19]:
+    if db_update == last_updated_at[:19]:
         return JsonResponse({"status": "No update"})
     else:
         new_data = {}
@@ -363,35 +368,76 @@ def long_poll(request: HttpRequest,char_id):
         abilities_data = {
             str(ability.ability): ability.score for ability in character_abilities
         }
-        new_data["abilities"] = list(Ability.objects.values_list("ability", flat=True))#DANGEROUS  distinct flag may become disregarded
-        new_data["ability_data"]=abilities_data
-
-        defense_data = Character_Defenses_Extra.objects.filter(character_id = char_id)
+        new_data["abilities"] = list(Ability.objects.values_list("ability", flat=True))  # DANGEROUS distinct flag may become disregarded
+        new_data["ability_data"] = abilities_data
+        defense_data = Character_Defenses_Extra.objects.filter(character_id=char_id)
         new_data["defenses"] = {
             'armor_coefficient': defense_data.first().armor_coefficient if defense_data.exists() else 0,
             'fortitude': defense_data.first().fortitude if defense_data.exists() else 0,
             'reflex': defense_data.first().reflex if defense_data.exists() else 0,
             'will': defense_data.first().will if defense_data.exists() else 0,
         }
-        character = Character.objects.get(id = char_id)
+        character = Character.objects.get(id=char_id)
         new_data["character"] = {
-                "name": character.name,
-                "char_class": character.char_class,
-                "race": character.race,
-                "xp": character.xp,
-                "size": character.size.__str__(),
-                "gender": character.gender.__str__(),
-                "height": character.height,
-                "weight": character.weight,
-                "alignment": character.alignment,
-                "deity": character.deity,
-                "speed": character.speed,
-                "action_points": character.action_points,
-            }
+            "name": character.name,
+            "char_class": character.char_class,
+            "race": character.race,
+            "xp": character.xp,
+            "size": character.size.__str__(),
+            "gender": character.gender.__str__(),
+            "height": character.height,
+            "weight": character.weight,
+            "alignment": character.alignment,
+            "deity": character.deity,
+            "speed": character.speed,
+            "action_points": character.action_points,
+        }
+        trained_skills = Character_Trained_Skill.objects.filter(character=char_id)
+        trained_skills_list = list(trained_skills.values_list('skill__skill', flat=True))
+        new_data["trained_skills"] = trained_skills_list
+
         return JsonResponse({
             "status": "Success",
             "updated_at": update.updated_at,
-            "new_data" : new_data,
+            "new_data": new_data,
         })
 
-    
+
+
+@csrf_exempt
+def save_selected_skills(request):
+    if request.method == 'POST':
+        try:
+            character_id = request.POST.get('character_id')
+            added_skills = request.POST.get('added_skills')
+            try:
+                character = Character.objects.get(pk=character_id)
+            except Character.DoesNotExist:
+                return JsonResponse({'error': 'Персонаж не найден'}, status=400)
+            if added_skills:
+                try:
+                    added_skills_list = json.loads(added_skills) 
+                    for skill_name in added_skills_list:
+                        try:
+                            skill = Skill.objects.get(skill=skill_name)
+                            obj, created = Character_Trained_Skill.objects.get_or_create(character=character, skill=skill)
+                        except Skill.DoesNotExist:
+                            continue  
+                except json.JSONDecodeError as e:
+                    return JsonResponse({'error': 'Ошибка при обработке данных добавленных навыков'}, status=400)
+            current_skills = Character_Trained_Skill.objects.filter(character=character).values_list('skill__skill', flat=True)
+            removed_skills_list = set(current_skills) - set(added_skills_list)
+            for skill_name in removed_skills_list:
+                deleted_count, _ = Character_Trained_Skill.objects.filter(character=character, skill__skill=skill_name).delete()
+            create_charlist_update(request.user,character.pk)
+            return JsonResponse({'message': 'Навыки успешно сохранены'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return HttpResponse("Only POST requests are allowed")
+
+
+
+
+
+

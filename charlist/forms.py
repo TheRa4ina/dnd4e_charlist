@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Character, Character_Defenses_Extra
+from .models import Character, Character_Defenses_Extra, Character_Trained_Skill
 
 
 
@@ -29,8 +29,19 @@ class DefensesForm(forms.ModelForm):
     
     def __str__(self):
         return f"{self.__class__.__name__}"
+    
+
+class SkillsForm(forms.ModelForm):
+
+    class Meta:
+        model = Character_Trained_Skill
+        fields = '__all__'
+    
+    def __str__(self):
+        return f"{self.__class__.__name__}"
 
 MODEL_FORM_MAP = {
     'GeneralCharacteristicsForm': GeneralCharacteristicsForm,
     'DefensesForm': DefensesForm,
+    'skills': SkillsForm,
 }

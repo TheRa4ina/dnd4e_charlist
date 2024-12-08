@@ -57,10 +57,42 @@ function calculateModifier(score) {
 }
 
 document.querySelectorAll('.skill-trained-checkbox').forEach(checkbox => {
-    checkbox.addEventListener('change', () => {
-        updateSkills(); 
+    checkbox.addEventListener('change', (event) => {
+        updateSkills();
+        updateSelectedSkills(event) 
     });
 });
+
+let previousSelectedSkills = []; 
+
+
+function updateSelectedSkills(event) {
+    const selectedSkills = [];
+    const checkboxes = document.querySelectorAll('.skill-trained-checkbox:checked'); 
+    checkboxes.forEach(checkbox => {
+        selectedSkills.push(checkbox.dataset.skill);  
+    });
+
+    console.log("selectedSkills:", selectedSkills);
+
+    const formData = new FormData();
+    formData.append('character_id', character_id); 
+    formData.append('added_skills', JSON.stringify(selectedSkills)); 
+
+    fetch('/save_selected_skills/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Data saved:", data);
+        previousSelectedSkills = selectedSkills;  
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+}
+
 
 function updateSkills() {
     const skillElements = document.querySelectorAll('.skill_value');
@@ -84,7 +116,7 @@ function updateSkills() {
         debugLog(`Updated ${skillName}: mod=${skillMod}`);
         const senseBonusField = document.getElementById(`${skillName}-bonus`);
         if (senseBonusField) {
-            senseBonusField.value = skillMod;  // Дублируем значение навыка в бонус чувств
+            senseBonusField.value = skillMod; 
         }
     });
 }
@@ -121,6 +153,7 @@ document.querySelectorAll('.ability-input').forEach(input => {
         updateAbilityDependencies();
     });
 });
+
 
 
 function sendData(event) {
@@ -192,34 +225,74 @@ document.addEventListener("DOMContentLoaded", () => {
     poll();
 });
 
+function collectCheckboxStates() {
+    const checkboxStates = {};
+    document.querySelectorAll('.skill-trained-checkbox').forEach(checkbox => {
+        checkboxStates[checkbox.dataset.skill] = checkbox.checked;
+    });
+    return checkboxStates;
+}
+
+
 let last_updated_at = "";
 function poll() {
     const char_id = document.getElementById('char-id').getAttribute('data-char-id');
+    const selectedSkills = collectCheckboxStates();  
+
     $.ajax({
-        url: "/long_poll/"+char_id, // Replace with your actual endpoint
+        url: "/long_poll/" + char_id,
         method: "GET",
-        data: { last_updated_at: last_updated_at }, // Last update timestamp
+        data: {
+            last_updated_at: last_updated_at,
+            selected_skills: selectedSkills 
+        },
         success: function(response) {
             if (response.status === "Success") {
                 last_updated_at = response.updated_at;
-                console.log(last_updated_at)
+                console.log(last_updated_at);
 
-                // Use the new data directly from the response
                 updateToNewData(response.new_data);
             }
-            setTimeout(poll, 700)
+            setTimeout(poll, 700);
         },
         error: function() {
-            setTimeout(poll, 5000); // Retry after 5 seconds
+            setTimeout(poll, 5000);
         }
     });
 }
+
 
 function updateToNewData(new_data) {
     updateToNewAbilites(new_data)
     updateToNewDefenses(new_data)
     updateToNewCharacterBase(new_data)
+    updateToNewSkills(new_data)  
 }
+
+function updateToNewSkills(new_data) {
+    const selected_skills = new_data.trained_skills; 
+    const skillValues = Object.values(selected_skills);
+    skillValues.forEach((value) => {
+        const skill = value;
+        const skillCheckbox = document.getElementById(`checkbox-${skill}`);
+        if (skillCheckbox) {
+            skillCheckbox.checked = true;
+            if (skillCheckbox.disabled) {
+                skillCheckbox.disabled = false;
+            }
+        } 
+    });
+
+    const allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+    allCheckboxes.forEach((checkbox) => {
+        const skillName = checkbox.id.replace('checkbox-', ''); 
+        if (checkbox.checked && !skillValues.includes(skillName)) {
+            checkbox.checked = false; 
+        }
+    });
+    updateSkills()
+}
+
 
 function updateToNewAbilites(new_data){
     abilities = new_data.abilities;
