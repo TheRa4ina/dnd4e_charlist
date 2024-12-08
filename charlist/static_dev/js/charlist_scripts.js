@@ -31,6 +31,21 @@ function debugLog(...args) {
   }
 }
 
+function calculateCharacterLevel(experience) {
+    let level = 1;  
+    const xpThresholds = [0, 1000, 2000, 3000, 4000, 5000, 6000, 8000, 10000, 12000, 15000, 18000, 21000, 25000, 30000, 35000, 40000, 45000, 50000, 60000];
+    
+    for (let i = 0; i < xpThresholds.length; i++) {
+        if (experience >= xpThresholds[i]) {
+            level = i + 1;  
+        }
+    }
+    return level;
+}
+
+
+
+
 const SKILL_DEPENDENCIES = {
     "acrobatic": "Dexterity",
     "arcana": "Intelligence",
@@ -154,6 +169,11 @@ document.querySelectorAll('.ability-input').forEach(input => {
     });
 });
 
+document.getElementById('id_xp').addEventListener('input', function() {
+    const xpValue = parseInt(this.value) || 0;  
+    const characterLevel = calculateCharacterLevel(xpValue);  
+    document.getElementById('level').value = characterLevel;  
+});
 
 
 function sendData(event) {
@@ -215,7 +235,12 @@ document.querySelectorAll("form").forEach(form => {
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Script loaded!");
     updateAbilityDependencies();  
-
+    const xpInput = document.getElementById('id_xp');
+    if (xpInput) {
+        const xpValue = parseInt(xpInput.value) || 0; 
+        const characterLevel = calculateCharacterLevel(xpValue);
+        document.getElementById('level').value = characterLevel;  
+    }
     const abilityInputs = document.querySelectorAll('.ability-input');
     abilityInputs.forEach(input => {
         input.addEventListener('input', (event) => {
