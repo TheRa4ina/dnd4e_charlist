@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}
-  My sessions
+My sessions
 {% endblock %}
 {% block content %}
 <h1 id="my-session-header" class="mb-4 d-flex justify-content-center">My sessions</h1>
@@ -11,12 +11,22 @@
       {% for session in sessions %}
       <div class="col-md-8 mb-3">
         <div class="session border border-3 p-3 mb-3 rounded d-flex justify-content-between align-items-center">
-          <a href="{% url 'charlist:CharSelector' session_id=session.info.id %}" class="text-decoration-none text-danger">
+          <a href="{% url 'charlist:CharSelector' session_id=session.info.id %}"
+            class="text-decoration-none text-danger">
             {{ session.info.name }}
           </a>
-          <button class="btn btn-outline-danger btn-sm" onclick="copyToClipboard(this, '{{ session.invite_link }}')">
-            Copy Invite Link
-          </button>
+
+          <div class="right-session-side d-flex ">
+            {% if session.is_gm %}
+            <div class="gm-icon text px-3 border-3" title="Game Master">
+              [gm]
+            </div>
+            {% endif %}
+            <button class="btn btn-outline-danger btn-sm" onclick="copyToClipboard(this, '{{ session.invite_link }}')">
+              Copy Invite Link
+            </button>
+          </div>
+
         </div>
       </div>
       {% endfor %}

@@ -134,7 +134,7 @@ class SessionSelection(LoginRequiredMixin, TemplateView):
                 invitation = Session_Invitation.objects.get(session=session)
             except Session_Invitation.DoesNotExist:
                 invitation = Session_Invitation.objects.create(session=session)
-
+            is_gm = Session_GM.objects.filter(session=session,gm=cur_user).exists()
             session_data.append(
                 {
                     "info": session,
@@ -144,6 +144,7 @@ class SessionSelection(LoginRequiredMixin, TemplateView):
                             kwargs={"invitation_key": invitation.key},
                         )
                     ),
+                    "is_gm": is_gm,
                 }
             )
         context["sessions"] = session_data
@@ -161,7 +162,7 @@ class CharSelector(SessionAccessRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context["session_id"] = session_id 
         is_gm = Session_GM.objects.filter(session=session, gm=current_user).exists()
-
+        context["is_gm"]=is_gm
         if is_gm:
             context["characters"] = Character.objects.filter(session=session)
         else:

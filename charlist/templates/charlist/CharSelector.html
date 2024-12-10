@@ -5,7 +5,8 @@
 {% endblock %}
 {% block content %}
 <div class="container text-center my-5 w-50">
-  <h1 class="mb-4">Character Sheets</h1>
+
+  <h1 class="mb-4">Character Sheets  {%if is_gm%}[gm]{%endif%}</h1>
   <div class="characters_container mb-4 border border-danger p-4 rounded bg-light shadow">
       {% for char in characters %}
       <div class="character my-2">
