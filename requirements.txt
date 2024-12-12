@@ -1,5 +1,5 @@
 asgiref==3.8.1
-Django==5.1.1
+Django==5.1.4
 django-bootstrap5==24.3
 django-livereload-server==0.5.1
 psycopg==3.2.2
