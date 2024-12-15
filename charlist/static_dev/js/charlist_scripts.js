@@ -269,7 +269,6 @@ function poll() {
         method: "GET",
         data: {
             last_updated_at: last_updated_at,
-            selected_skills: selectedSkills 
         },
         success: function(response) {
             if (response.status === "Success") {
