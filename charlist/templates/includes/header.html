@@ -16,10 +16,16 @@
               <button type="button" class="btn btn-outline-danger btn-lg rounded" style="display: inline; margin-left: 10px;">
                   <a class="text-decoration-none text-reset" href="{% url 'charlist:SessionSelector' %}">My sessions</a>
               </button>
-              <form action="{% url 'user:logout' %}" method="post" style="display: inline; margin-left: 40px;">
+              <div class="d-flex flex-row align-items-center">
+                <form action="{% url 'user:logout' %}" method="post" style="display: inline; margin-left: 40px;">
                   {% csrf_token %}
                   <button type="submit" class="btn btn-outline-danger btn-lg square-btn">Log Out</button>
-              </form>
+                </form> 
+                <div class="mx-4 text-secondary"> 
+                  {{user.get_username}}
+                </div>
+              </div>
+
           </div>        
           {% else %}
             <div class="btn-group" role="group" aria-label="Basic outlined example">
