@@ -45,7 +45,6 @@ function calculateCharacterLevel(experience) {
 
 
 
-
 const SKILL_DEPENDENCIES = {
     "acrobatic": "Dexterity",
     "arcana": "Intelligence",
@@ -234,6 +233,13 @@ document.querySelectorAll("form").forEach(form => {
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Script loaded!");
+    var sections = ['senses', 'defenses', 'character', 'abilities', 'skills'];
+    sections.forEach(function(sectionId) {
+        var section = document.getElementById(sectionId);
+        var icon = document.getElementById('icon-' + sectionId);
+        section.style.display = "none"; // Hide section
+        icon.textContent = "▼"; // Set icon to down arrow
+    });
     updateAbilityDependencies();  
     const xpInput = document.getElementById('id_xp');
     if (xpInput) {
@@ -257,7 +263,17 @@ function collectCheckboxStates() {
     });
     return checkboxStates;
 }
-
+function toggleVisibility(sectionId) {
+    var section = document.getElementById(sectionId);
+    var icon = document.getElementById('icon-' + sectionId);
+    if (section.style.display === "none" || section.style.display === "") {
+        section.style.display = "block";
+        icon.textContent = "▲"; // Change icon to up arrow
+    } else {
+        section.style.display = "none";
+        icon.textContent = "▼"; // Change icon to down arrow
+    }
+}
 
 let last_updated_at = "";
 function poll() {

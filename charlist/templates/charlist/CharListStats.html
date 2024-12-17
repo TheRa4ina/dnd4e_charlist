@@ -11,44 +11,53 @@ display: none;
 z-index: 9999; 
 ">Saving...</div>
 <div id="char-id" data-char-id="{{ character_id }}" style="display:none;"></div>
-  <div class="container">
+<div class="container">
     <div class="row">
-
-      <div class="col-md-5 mb-4">
-        <h1 class="text-center">SENSES</h1>
-        <div class="bg-light p-3 rounded shadow">
-          {% include "includes/senses.html" %}
+        <div class="col-md-5 mb-4">
+            <h1 class="text-center" onclick="toggleVisibility('senses')">
+                SENSES <span id="icon-senses" class="toggle-icon">▼</span>
+            </h1>
+            <div id="senses" class="bg-light p-3 rounded shadow" style="display: none;">
+                {% include "includes/senses.html" %}
+            </div>
         </div>
-      </div>
-      <div class="col-md-7 mb-4">
-        <h1 class="text-center">DEFENSES</h1>
-        <div class="bg-light p-3 rounded shadow">
-          {% include "includes/defenses.html" %}
+        <div class="col-md-7 mb-4">
+            <h1 class="text-center" onclick="toggleVisibility('defenses')">
+                DEFENSES <span id="icon-defenses" class="toggle-icon">▼</span>
+            </h1>
+            <div id="defenses" class="bg-light p-3 rounded shadow" style="display: none;">
+                {% include "includes/defenses.html" %}
+            </div>
         </div>
-      </div>
     </div>
 
     <div class="row">
-      <div class="col-md-6 mb-4">
-        <h1 class="text-center">CHARACTER</h1>
-        <div class="bg-light p-3 rounded shadow">
-          {% include "includes/general_characteristics.html" %}
+        <div class="col-md-6 mb-4">
+            <h1 class="text-center" onclick="toggleVisibility('character')">
+                CHARACTER <span id="icon-character" class="toggle-icon">▼</span>
+            </h1>
+            <div id="character" class="bg-light p-3 rounded shadow" style="display: none;">
+                {% include "includes/general_characteristics.html" %}
+            </div>
+
+            <h1 class="text-center" onclick="toggleVisibility('abilities')">
+                ABILITIES <span id="icon-abilities" class="toggle-icon">▼</span>
+            </h1>
+            <div id="abilities" class="bg-light p-3 rounded shadow h-50" style="display: none;">
+                {% include "includes/abilities.html" %}
+            </div>
         </div>
 
-        <h1 class="text-center">ABILITIES</h1>
-        <div class="bg-light p-3 rounded shadow h-50">
-          {% include "includes/abilities.html" %}
+        <div class="col-md-6 mb-3 d-flex flex-column justify-content-between">
+            <h1 class="text-center" onclick="toggleVisibility('skills')">
+                SKILLS <span id="icon-skills" class="toggle-icon">▼</span>
+            </h1>
+            <div id="skills" class="bg-light p-3 rounded shadow" style="display: none;">
+                {% include "includes/skills.html" %}
+            </div>
         </div>
-      </div>
-
-      <div class="col-md-6 mb-3 d-flex flex-column justify-content-between">
-        <h1 class="text-center">SKILLS</h1>
-        <div class="bg-light p-3 rounded shadow">
-          {% include "includes/skills.html" %}
-        </div>
-      </div>
     </div>
-  </div>
+</div>
 
 <script src="{% static 'js/charlist_scripts.js' %}"></script>
 <!-- load in jquery from google's server -->
