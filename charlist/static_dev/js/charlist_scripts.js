@@ -140,19 +140,21 @@ function updateModifiers() {
     abilityInputs.forEach(input => {
         const score = parseInt(input.value) || 0; 
         const abilityId = input.id;  
+        const level = parseInt(document.getElementById("level").value,10);
+        // Trusting that level is never lower than 1         
+        let halfLevel = Math.round(level / 2);// cause its hardcoded to not be
 
-     
         const mod = calculateModifier(score); 
-        const modPlus = mod + 1;  
+        const modPlusHalfLevel = mod + halfLevel;  
 
         
         const modField = document.getElementById(`${abilityId}-mod`);
-        const modPlusField = document.getElementById(`${abilityId}-mod-plus`);
+        const modPlusHalfLevelField = document.getElementById(`${abilityId}-mod-plus`);
 
         if (modField) modField.value = mod; 
-        if (modPlusField) modPlusField.value = modPlus;  
+        if (modPlusHalfLevelField) modPlusHalfLevelField.value = modPlusHalfLevel;  
 
-        debugLog(`Updated ${abilityId}: mod=${mod}, modPlus=${modPlus}`);
+        debugLog(`Updated ${abilityId}: mod=${mod}, modPlus=${modPlusHalfLevel}`);
     });
 
 }
